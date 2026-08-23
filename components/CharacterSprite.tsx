@@ -800,6 +800,252 @@ export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
           </div>
         </div>
       )}
+      {/* ========================================================================= */}
+      {/* --- 13. BIONIC ARM BUILDER --- */}
+      {/* ========================================================================= */}
+      {characterId === "bionic_arm_builder" && (
+        <div className="relative flex items-center overflow-visible">
+          {renderFlagBanner("🦾")}
+          <div className="relative w-44 h-28 flex-shrink-0 z-20 transition-transform duration-300 group-hover:scale-105">
+            <svg viewBox="0 0 200 140" className="w-full h-full drop-shadow-xl overflow-visible">
+              <ellipse cx="95" cy="128" rx="80" ry="6" fill="#000000" opacity="0.18" />
+
+              {/* Person Body */}
+              <g transform="translate(60, 8)">
+                {/* Head & Hair */}
+                <circle cx="36" cy="22" r="13" fill="#fddba8" />
+                <path d="M 23 18 Q 36 6 49 18 Q 44 26 23 18 Z" fill="#1e293b" />
+                {/* Eyeglasses */}
+                <rect x="32" y="18" width="10" height="7" rx="2" fill="none" stroke="#0284c7" strokeWidth="2" />
+                <line x1="30" y1="21" x2="32" y2="21" stroke="#0284c7" strokeWidth="1.5" />
+                
+                {/* Torso / Tech Vest */}
+                <rect x="23" y="34" width="26" height="36" rx="6" fill="#0369a1" />
+                <rect x="28" y="38" width="16" height="28" rx="3" fill="#0284c7" />
+                {renderAccessoryOverlay()}
+
+                {/* Left Arm: High-tech Bionic Arm with Glowing Circuit Nodes */}
+                <g className={isHovered ? "animate-pulse" : ""}>
+                  {/* Shoulder Joint */}
+                  <circle cx="20" cy="40" r="6" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
+                  {/* Bionic Upper Arm */}
+                  <path d="M 20 40 L 4 64" stroke="#334155" strokeWidth="8" strokeLinecap="round" />
+                  <line x1="18" y1="42" x2="6" y2="60" stroke="#38bdf8" strokeWidth="2" strokeDasharray="3 2" />
+                  {/* Elbow Servo */}
+                  <circle cx="4" cy="64" r="5" fill="#0284c7" stroke="#38bdf8" strokeWidth="2" />
+                  {/* Bionic Forearm & Articulated Hand */}
+                  <path d="M 4 64 L -12 52" stroke="#0f172a" strokeWidth="7" strokeLinecap="round" />
+                  {/* Glowing Energy Node */}
+                  <circle cx="-12" cy="52" r="4" fill="#38bdf8" className="animate-ping" opacity="0.8" />
+                  <circle cx="-12" cy="52" r="3.5" fill="#38bdf8" />
+                  {/* Articulated Bionic Fingers holding a holographic tablet */}
+                  <rect x="-24" y="38" width="16" height="22" rx="3" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" opacity="0.9" />
+                  <line x1="-20" y1="44" x2="-12" y2="44" stroke="#ffffff" strokeWidth="1.5" />
+                  <line x1="-20" y1="49" x2="-14" y2="49" stroke="#38bdf8" strokeWidth="1.5" />
+                </g>
+
+                {/* Right Arm: Natural arm waving or holding stylus */}
+                {isHovered || isWaving ? (
+                  <path d="M 48 40 L 68 22" stroke="#fddba8" strokeWidth="6" strokeLinecap="round" className="animate-bounce" />
+                ) : (
+                  <path d="M 48 40 L 56 62" stroke="#fddba8" strokeWidth="6" strokeLinecap="round" />
+                )}
+
+                {/* Legs & Tech Sneakers */}
+                <path d="M 28 68 L 22 106" stroke="#1e293b" strokeWidth="7" strokeLinecap="round" />
+                <path d="M 44 68 L 48 106" stroke="#1e293b" strokeWidth="7" strokeLinecap="round" />
+                <rect x="14" y="104" width="16" height="8" rx="3" fill="#0284c7" />
+                <rect x="42" y="104" width="16" height="8" rx="3" fill="#0284c7" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* --- 14. SENSORY CALM TEEN --- */}
+      {/* ========================================================================= */}
+      {characterId === "sensory_calm_teen" && (
+        <div className="relative flex items-center overflow-visible">
+          {renderFlagBanner("🎧")}
+          <div className="relative w-44 h-28 flex-shrink-0 z-20 transition-transform duration-300 group-hover:scale-105">
+            <svg viewBox="0 0 200 140" className="w-full h-full drop-shadow-xl overflow-visible">
+              <ellipse cx="95" cy="128" rx="75" ry="6" fill="#000000" opacity="0.18" />
+
+              {/* Ambient Calming Soundwave Aura */}
+              <g transform="translate(68, 8)">
+                <circle cx="36" cy="22" r="26" fill="none" stroke="#c084fc" strokeWidth="1.5" opacity="0.3" className="animate-ping" style={{animationDuration: "3s"}} />
+                <circle cx="36" cy="22" r="32" fill="none" stroke="#818cf8" strokeWidth="1" opacity="0.2" className="animate-ping" style={{animationDuration: "4s"}} />
+
+                {/* Head & Soft Curly Hair */}
+                <circle cx="36" cy="22" r="13" fill="#fed7aa" />
+                <path d="M 22 18 Q 36 4 50 18 Q 46 28 22 18 Z" fill="#92400e" />
+
+                {/* Over-Ear Noise Cancelling Headphones */}
+                <path d="M 21 22 A 16 16 0 0 1 51 22" fill="none" stroke="#6d28d9" strokeWidth="4" strokeLinecap="round" />
+                <rect x="18" y="16" width="7" height="13" rx="3" fill="#7c3aed" stroke="#c084fc" strokeWidth="1" />
+                <rect x="47" y="16" width="7" height="13" rx="3" fill="#7c3aed" stroke="#c084fc" strokeWidth="1" />
+
+                {/* Cozy Oversized Hoodie */}
+                <rect x="20" y="34" width="32" height="38" rx="8" fill="#8b5cf6" />
+                <path d="M 28 34 L 36 50 L 44 34" fill="#7c3aed" opacity="0.7" />
+                {renderAccessoryOverlay()}
+
+                {/* Left Arm holding glowing tactile fidget spinner */}
+                <path d="M 20 42 L 8 62" stroke="#8b5cf6" strokeWidth="8" strokeLinecap="round" />
+                <circle cx="6" cy="64" r="5" fill="#fed7aa" />
+                <circle cx="6" cy="64" r="8" fill="none" stroke="#38bdf8" strokeWidth="2" strokeDasharray="3 3" className="animate-spin" style={{animationDuration: "2s"}} />
+                <circle cx="6" cy="64" r="3" fill="#38bdf8" />
+
+                {/* Right Arm: peaceful wave or gentle posture */}
+                {isHovered || isWaving ? (
+                  <path d="M 52 42 L 68 28" stroke="#8b5cf6" strokeWidth="8" strokeLinecap="round" className="animate-bounce" />
+                ) : (
+                  <path d="M 52 42 L 60 66" stroke="#8b5cf6" strokeWidth="8" strokeLinecap="round" />
+                )}
+
+                {/* Relaxed Pants & Shoes */}
+                <path d="M 28 70 L 24 106" stroke="#4c1d95" strokeWidth="7" strokeLinecap="round" />
+                <path d="M 44 70 L 48 106" stroke="#4c1d95" strokeWidth="7" strokeLinecap="round" />
+                <rect x="16" y="104" width="16" height="8" rx="3" fill="#a78bfa" />
+                <rect x="42" y="104" width="16" height="8" rx="3" fill="#a78bfa" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* --- 15. PEDIATRIC SUPERHERO WALKER --- */}
+      {/* ========================================================================= */}
+      {characterId === "pediatric_walker_kid" && (
+        <div className="relative flex items-center overflow-visible">
+          {renderFlagBanner("🦸‍♂️")}
+          <div className="relative w-44 h-28 flex-shrink-0 z-20 transition-transform duration-300 group-hover:scale-105">
+            <svg viewBox="0 0 200 140" className="w-full h-full drop-shadow-xl overflow-visible">
+              <ellipse cx="95" cy="128" rx="80" ry="6" fill="#000000" opacity="0.18" />
+
+              {/* Posterior Pediatric Walker Frame (Bright Red/Orange) */}
+              <g transform="translate(45, 12)">
+                {/* Main Posterior U-Frame surrounding the child from behind */}
+                <path d="M 12 35 L 12 85 L 35 98 L 78 98" fill="none" stroke="#ea580c" strokeWidth="4" strokeLinecap="round" />
+                <path d="M 12 35 L 65 35" fill="none" stroke="#f97316" strokeWidth="4.5" strokeLinecap="round" />
+                
+                {/* Rear Wheels with Light-Up Speed Sparks */}
+                <circle cx="12" cy="98" r="9" fill="#0f172a" stroke="#fbbf24" strokeWidth="2.5" />
+                <circle cx="12" cy="98" r="4" fill="#ea580c" className="animate-spin" />
+                {/* Front Swivel Caster Wheels with Light-up glow */}
+                <circle cx="78" cy="98" r="7" fill="#0f172a" stroke="#38bdf8" strokeWidth="2" />
+                <circle cx="78" cy="98" r="3" fill="#38bdf8" className="animate-ping" opacity="0.7" />
+
+                {/* Superhero Child inside walker */}
+                <g transform="translate(32, 4)">
+                  {/* Flapping Superhero Cape */}
+                  <path d="M 12 28 Q -8 40 -18 70 Q -4 65 14 55 Z" fill="#dc2626" opacity="0.9" className="animate-pulse" />
+
+                  {/* Head & Joyful Smile */}
+                  <circle cx="24" cy="16" r="11" fill="#fddba8" />
+                  <path d="M 14 12 Q 24 2 34 12 Z" fill="#b45309" />
+                  <path d="M 20 18 Q 24 23 28 18" stroke="#78350f" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+
+                  {/* Superhero Shirt with Star Badge */}
+                  <rect x="14" y="26" width="20" height="28" rx="5" fill="#2563eb" />
+                  <circle cx="24" cy="38" r="4.5" fill="#facc15" />
+                  <text x="24" y="41" fontSize="6" textAnchor="middle" fill="#1e3a8a" fontWeight="bold">★</text>
+                  {renderAccessoryOverlay()}
+
+                  {/* Arms gripping ergonomic walker handgrips */}
+                  <path d="M 16 32 L -4 30" stroke="#fddba8" strokeWidth="5" strokeLinecap="round" />
+                  <path d="M 32 32 L 38 31" stroke="#fddba8" strokeWidth="5" strokeLinecap="round" />
+
+                  {/* Energetic Striding Legs with AFO Braces */}
+                  <path d="M 18 52 L 12 82" stroke="#1d4ed8" strokeWidth="6" strokeLinecap="round" />
+                  {/* AFO Ankle Brace (Bright Teal) */}
+                  <rect x="8" y="72" width="8" height="12" rx="2" fill="#06b6d4" stroke="#0891b2" strokeWidth="1" />
+                  
+                  <path d="M 28 52 L 34 82" stroke="#1d4ed8" strokeWidth="6" strokeLinecap="round" />
+                  <rect x="30" y="72" width="8" height="12" rx="2" fill="#06b6d4" stroke="#0891b2" strokeWidth="1" />
+                  {/* Sneakers */}
+                  <rect x="6" y="82" width="13" height="6" rx="2" fill="#ea580c" />
+                  <rect x="28" y="82" width="13" height="6" rx="2" fill="#ea580c" />
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* --- 16. CARER SUPPORT DUO --- */}
+      {/* ========================================================================= */}
+      {characterId === "carer_support_duo" && (
+        <div className="relative flex items-center overflow-visible">
+          {renderFlagBanner("👩‍⚕️")}
+          <div className="relative w-52 h-28 flex-shrink-0 z-20 transition-transform duration-300 group-hover:scale-105">
+            <svg viewBox="0 0 260 140" className="w-full h-full drop-shadow-xl overflow-visible">
+              <ellipse cx="130" cy="128" rx="105" ry="6" fill="#000000" opacity="0.18" />
+
+              {/* Person 1: Support Worker (left, wearing teal scrubs & lanyard) */}
+              <g transform="translate(30, 8)">
+                <circle cx="34" cy="20" r="12" fill="#fddba8" />
+                <path d="M 24 16 Q 34 6 44 16" fill="#7c2d12" />
+                {/* Medical / Care Scrubs */}
+                <rect x="22" y="32" width="24" height="34" rx="6" fill="#059669" />
+                {/* Lanyard / Badge */}
+                <path d="M 28 32 L 34 46 L 40 32" stroke="#fbbf24" strokeWidth="1.5" fill="none" />
+                <rect x="31" y="46" width="6" height="8" rx="1" fill="#ffffff" stroke="#cbd5e1" strokeWidth="0.8" />
+                {renderAccessoryOverlay()}
+
+                {/* Right arm linked gently to support Person 2 */}
+                <path d="M 44 40 L 75 42" stroke="#fddba8" strokeWidth="6" strokeLinecap="round" />
+                
+                {/* Left arm: Friendly wave */}
+                {isHovered || isWaving ? (
+                  <path d="M 22 40 L 8 20" stroke="#fddba8" strokeWidth="6" strokeLinecap="round" className="animate-bounce" />
+                ) : (
+                  <path d="M 22 40 L 16 64" stroke="#fddba8" strokeWidth="6" strokeLinecap="round" />
+                )}
+
+                {/* Legs */}
+                <path d="M 28 66 L 24 104" stroke="#047857" strokeWidth="7" strokeLinecap="round" />
+                <path d="M 40 66 L 44 104" stroke="#047857" strokeWidth="7" strokeLinecap="round" />
+                <rect x="18" y="102" width="14" height="7" rx="3" fill="#0f172a" />
+                <rect x="38" y="102" width="14" height="7" rx="3" fill="#0f172a" />
+              </g>
+
+              {/* Heart connection symbol between them */}
+              <g transform="translate(102, 28)" className="animate-bounce">
+                <path d="M 12 4 A 4 4 0 0 0 4 8 C 4 14 12 18 12 18 C 12 18 20 14 20 8 A 4 4 0 0 0 12 4 Z" fill="#ec4899" opacity="0.85" />
+              </g>
+
+              {/* Person 2: Active Senior Client (right, walking confidently with cane in left hand) */}
+              <g transform="translate(125, 8)">
+                <circle cx="48" cy="20" r="12" fill="#fed7aa" />
+                {/* Silver/Grey Hair */}
+                <path d="M 38 16 Q 48 4 58 16 Q 52 24 38 16 Z" fill="#94a3b8" />
+                {/* Cheerful Cardigan */}
+                <rect x="36" y="32" width="24" height="34" rx="6" fill="#d97706" />
+                <line x1="48" y1="32" x2="48" y2="66" stroke="#b45309" strokeWidth="2" />
+
+                {/* Left arm: holding supportive walking cane */}
+                <path d="M 38 40 L 18 58" stroke="#fed7aa" strokeWidth="6" strokeLinecap="round" />
+                {/* Sleek Modern Ergonomic Cane */}
+                <path d="M 16 54 Q 12 50 8 54 L 8 106" stroke="#334155" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+                <circle cx="8" cy="106" r="3" fill="#0f172a" />
+
+                {/* Right arm linked with Carer */}
+                <path d="M 58 40 L 45 42" stroke="#fed7aa" strokeWidth="6" strokeLinecap="round" />
+
+                {/* Legs */}
+                <path d="M 42 66 L 38 104" stroke="#475569" strokeWidth="7" strokeLinecap="round" />
+                <path d="M 54 66 L 58 104" stroke="#475569" strokeWidth="7" strokeLinecap="round" />
+                <rect x="32" y="102" width="14" height="7" rx="3" fill="#1e293b" />
+                <rect x="52" y="102" width="14" height="7" rx="3" fill="#1e293b" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      )}
 
     </div>
   );

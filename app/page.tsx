@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { AdCampaign, PageSlug } from "../types/campaign";
 import { INITIAL_CAMPAIGNS, MOCK_CHARACTERS } from "../lib/mockData";
 import { CruisingAdEngine } from "../components/CruisingAdEngine";
@@ -8,6 +10,7 @@ import { AdminCmsPanel } from "../components/AdminCmsPanel";
 import { AdvertiserModal } from "../components/AdvertiserModal";
 
 export default function Home() {
+  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState<PageSlug>("home");
   const [campaigns, setCampaigns] = useState<AdCampaign[]>(INITIAL_CAMPAIGNS);
@@ -20,7 +23,7 @@ export default function Home() {
 
   if (!isMounted) return null;
 
-  // Handle Campaign Clicks from Cruising Engine
+  // Handle Campaign Clicks from Cruising Engine -> Directly Open Full Seller Storefront Page
   const handleCampaignClick = (campaign: AdCampaign) => {
     // Increment click count in state
     setCampaigns(prev => prev.map(c => {
@@ -30,10 +33,11 @@ export default function Home() {
       return c;
     }));
 
-    if (campaign.clickBehavior === "MODAL") {
-      setSelectedModalCampaign(campaign);
-    } else {
+    if (campaign.clickBehavior === "URL" && campaign.targetUrl && campaign.targetUrl.startsWith("http")) {
       window.open(campaign.targetUrl, "_blank");
+    } else {
+      // Direct navigation to dedicated full seller storefront page
+      router.push(`/seller/${campaign.advertiserId || "adv_abc_mobility"}`);
     }
   };
 
@@ -255,12 +259,16 @@ export default function Home() {
               return (
                 <div 
                   key={ad.id} 
-                  onClick={() => setSelectedModalCampaign(ad)}
-                  className="px-3.5 py-2 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-xl cursor-pointer transition-all flex items-center gap-2 text-xs font-bold"
+                  onClick={() => router.push(`/seller/${ad.advertiserId || "adv_abc_mobility"}`)}
+                  className="px-3.5 py-2 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-xl cursor-pointer transition-all flex items-center gap-2 text-xs font-bold shadow-sm hover:shadow"
+                  title={`Open ${ad.advertiserName} Storefront`}
                 >
                   <span className="text-lg">{charMeta?.icon || "🎭"}</span>
                   <div>
-                    <div className="text-slate-900 leading-tight">{ad.advertiserName}</div>
+                    <div className="text-slate-900 leading-tight flex items-center gap-1">
+                      <span>{ad.advertiserName}</span>
+                      <span className="text-[10px] text-blue-600 font-bold">↗</span>
+                    </div>
                     <div className="text-[10px] text-blue-600 font-semibold">"{ad.ctaText}"</div>
                   </div>
                 </div>

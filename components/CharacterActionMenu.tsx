@@ -111,10 +111,10 @@ export const CharacterActionMenu: React.FC<CharacterActionMenuProps> = ({
           <div className="space-y-1.5">
             <button
               onClick={(e) => { e.stopPropagation(); onViewProducts(); }}
-              className="w-full px-3 py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 shadow-lg shadow-blue-600/25"
+              className="w-full px-3 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:from-blue-700 active:to-indigo-700 text-white rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30"
             >
-              <span className="text-sm">🏷️</span>
-              <span>See Products &amp; Deals →</span>
+              <span className="text-sm">🏪</span>
+              <span>Visit Seller Storefront →</span>
             </button>
             <div className="grid grid-cols-2 gap-1.5">
               <button

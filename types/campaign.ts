@@ -3,14 +3,18 @@ export type CharacterId =
   | "accessible_van" 
   | "scooter_nurse" 
   | "electric_chair" 
-  | "stairlift_pro"
-  | "walker_lady"
-  | "guide_dog_duo"
-  | "hearing_aid_teen"
-  | "prosthetic_athlete"
-  | "crutches_kid"
-  | "delivery_trike"
-  | "sign_language_duo";
+  | "stairlift_pro" 
+  | "walker_lady" 
+  | "guide_dog_duo" 
+  | "hearing_aid_teen" 
+  | "prosthetic_athlete" 
+  | "crutches_kid" 
+  | "delivery_trike" 
+  | "sign_language_duo"
+  | "bionic_arm_builder"
+  | "sensory_calm_teen"
+  | "pediatric_walker_kid"
+  | "carer_support_duo";
 
 export type PageSlug = "all" | "home" | "wheelchairs" | "vans" | "scooters" | "finance";
 
@@ -83,7 +87,7 @@ export interface AdCampaign {
   mergedBannerText?: string;   // Joint banner displayed when characters group up
   
   targetUrl: string;            
-  clickBehavior: "MODAL" | "URL"; 
+  clickBehavior: "PAGE" | "MODAL" | "URL"; 
   assignedPages: PageSlug[];    
   startDate: string;            
   endDate: string;              

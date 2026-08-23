@@ -382,7 +382,7 @@ export const AdminCmsPanel: React.FC<AdminCmsPanelProps> = ({
                   </div>
                 </div>
 
-                {/* 2. Advertiser Info & Target URL */}
+                {/* 2. Advertiser Info & Target Destination */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-extrabold text-slate-700 mb-1">
@@ -399,7 +399,7 @@ export const AdminCmsPanel: React.FC<AdminCmsPanelProps> = ({
 
                   <div>
                     <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                      3. Target URL *
+                      3. External / Fallback Website URL *
                     </label>
                     <input
                       type="text"
@@ -408,6 +408,40 @@ export const AdminCmsPanel: React.FC<AdminCmsPanelProps> = ({
                       onChange={(e) => setEditingCampaign({ ...editingCampaign, targetUrl: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
+                  </div>
+                </div>
+
+                {/* 2B. Click Destination Behavior */}
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 mb-2">
+                    2B. User Click Destination Action *
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {[
+                      { id: "PAGE", icon: "🏪", title: "Dedicated Seller Page", desc: "Opens full /seller/[id] showcase with products, NDIS badges & booking inquiry form." },
+                      { id: "MODAL", icon: "📱", title: "Quick Catalog Modal", desc: "Opens popup dialog displaying featured inventory without leaving the current page." },
+                      { id: "URL", icon: "🔗", title: "Direct External URL", desc: "Directly opens advertiser external website in a new browser tab." },
+                    ].map((dest) => {
+                      const isSel = (editingCampaign?.clickBehavior || "PAGE") === dest.id;
+                      return (
+                        <button
+                          key={dest.id}
+                          type="button"
+                          onClick={() => setEditingCampaign({ ...editingCampaign, clickBehavior: dest.id as any })}
+                          className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
+                            isSel
+                              ? "border-blue-600 bg-blue-50/70 text-blue-900 font-bold shadow-md shadow-blue-500/10"
+                              : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                          }`}
+                        >
+                          <div className="text-xs font-extrabold flex items-center gap-1.5">
+                            <span>{dest.icon}</span>
+                            <span>{dest.title}</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 mt-1 leading-relaxed">{dest.desc}</div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
