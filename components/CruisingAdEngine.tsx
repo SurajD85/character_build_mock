@@ -5,6 +5,8 @@ import { AdCampaign, PageSlug } from "../types/campaign";
 import { CharacterSprite } from "./CharacterSprite";
 import { CharacterPreviewTooltip } from "./CharacterPreviewTooltip";
 import { CharacterActionMenu } from "./CharacterActionMenu";
+import { QuietModeToggle } from "./QuietModeToggle";
+import { CornerAdWidget } from "./CornerAdWidget";
 import { MOCK_CHARACTERS } from "../lib/mockData";
 import {
   findSceneClip,
@@ -33,6 +35,11 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
   speedMultiplier = 1,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [isQuiet, setIsQuiet] = useState(false);
+  const [isReducedMotionSystem, setIsReducedMotionSystem] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isUserIdle, setIsUserIdle] = useState(false);
+  const [proximityCampaignId, setProximityCampaignId] = useState<string | null>(null);
 
   // Which campaign currently has the click-to-interact action menu open
   const [actionMenuCampaignId, setActionMenuCampaignId] = useState<string | null>(null);
@@ -40,7 +47,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
   // Which campaign is being hovered (for preview tooltip)
   const [hoveredCampaignId, setHoveredCampaignId] = useState<string | null>(null);
 
-  // Per-campaign bubble text driven by scene clips / emotion states
+  // Per-campaign bubble text driven by scene clips / emotion states / idle / proximity
   const [activeDialogues, setActiveDialogues] = useState<{
     [campaignId: string]: { char1?: string; char2?: string };
   }>({});
@@ -60,8 +67,45 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
   const emotionCleanupRefs = useRef<{ [key: string]: ReturnType<typeof setTimeout> | null }>({});
   const quickTiltRefs = useRef<{ [key: string]: gsap.QuickToFunc }>({});
 
+  // 1. Mount & System Accessibility / Mobile Detection
   useEffect(() => {
     setIsMounted(true);
+
+    // Check system prefers-reduced-motion
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setIsReducedMotionSystem(motionQuery.matches);
+
+    // Check localStorage preference
+    const savedQuiet = localStorage.getItem("acm_quiet");
+    if (savedQuiet === "true" || motionQuery.matches) {
+      setIsQuiet(true);
+    }
+
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      setIsReducedMotionSystem(e.matches);
+      if (e.matches) setIsQuiet(true);
+    };
+    motionQuery.addEventListener("change", handleMotionChange);
+
+    // Mobile check
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile, { passive: true });
+
+    return () => {
+      motionQuery.removeEventListener("change", handleMotionChange);
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  const handleToggleQuiet = useCallback(() => {
+    setIsQuiet((prev) => {
+      const next = !prev;
+      localStorage.setItem("acm_quiet", String(next));
+      return next;
+    });
   }, []);
 
   // Active campaigns for this page
@@ -79,6 +123,65 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
     )
     .join(",");
   const isCrowded = activeCampaigns.length >= 2;
+
+  // ============================================================
+  // SMART IDLE DETECTION — slows down & offers gentle help
+  // ============================================================
+  useEffect(() => {
+    if (!isMounted || isQuiet) return;
+
+    let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const resetIdle = () => {
+      if (idleTimer) clearTimeout(idleTimer);
+
+      if (isUserIdle) {
+        setIsUserIdle(false);
+        if (masterTlRef.current && !actionMenuCampaignId && !hoveredCampaignId) {
+          gsap.to(masterTlRef.current, { timeScale: 1, duration: 0.6, ease: "power2.out" });
+        }
+        // Clear idle dialogues
+        setActiveDialogues((prev) => {
+          const next = { ...prev };
+          Object.keys(next).forEach((k) => {
+            if (next[k]?.char1?.includes("👋") || next[k]?.char1?.includes("Need help") || next[k]?.char1?.includes("Take your time")) {
+              next[k] = { ...next[k], char1: undefined };
+            }
+          });
+          return next;
+        });
+      }
+
+      idleTimer = setTimeout(() => {
+        setIsUserIdle(true);
+        if (masterTlRef.current && !actionMenuCampaignId && !hoveredCampaignId) {
+          gsap.to(masterTlRef.current, { timeScale: 0.35, duration: 0.8, ease: "power2.out" });
+        }
+
+        // Set gentle friendly message on active campaign
+        if (activeCampaigns.length > 0) {
+          const firstCamp = activeCampaigns[0];
+          setActiveDialogues((prev) => ({
+            ...prev,
+            [firstCamp.id]: {
+              ...prev[firstCamp.id],
+              char1: "Take your time! Click anytime for special offers! 👋",
+            },
+          }));
+        }
+      }, 4000);
+    };
+
+    resetIdle();
+
+    const events = ["mousemove", "scroll", "keydown", "touchstart", "click"];
+    events.forEach((ev) => window.addEventListener(ev, resetIdle, { passive: true }));
+
+    return () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      events.forEach((ev) => window.removeEventListener(ev, resetIdle));
+    };
+  }, [isMounted, isQuiet, isUserIdle, activeCampaigns, actionMenuCampaignId, hoveredCampaignId]);
 
   // ============================================================
   // EMOTION STATE MACHINE — GSAP physical reactions on INNER wrapper
@@ -173,14 +276,18 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
         setActiveDialogues((prev) => ({ ...prev, [campaignId]: { ...prev[campaignId], char1: undefined } }));
       }, duration);
     },
-    [] // stable ref — no deps needed since we only touch refs and state setters
+    [] // stable ref
   );
 
   // ============================================================
-  // CURSOR TILT — quickTo for 60fps tilt without React re-renders
+  // CURSOR PROXIMITY & HEAD TILT REACTION
   // ============================================================
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || isQuiet) return;
+
+    // Check if hover pointer is supported (desktop)
+    const isTouch = window.matchMedia("(hover: none)").matches;
+    if (isTouch) return;
 
     // Build quickTo functions for rotation on each active character
     const buildQuickTilts = () => {
@@ -188,14 +295,14 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
         const el = innerAdRefs.current[`${c.id}_primary`];
         if (el) {
           quickTiltRefs.current[`${c.id}_primary`] = gsap.quickTo(el, "rotation", {
-            duration: 0.55,
+            duration: 0.45,
             ease: "power2.out",
           });
         }
         const elP = innerAdRefs.current[`${c.id}_partner`];
         if (elP) {
           quickTiltRefs.current[`${c.id}_partner`] = gsap.quickTo(elP, "rotation", {
-            duration: 0.7,
+            duration: 0.6,
             ease: "power2.out",
           });
         }
@@ -203,28 +310,70 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
     };
 
     buildQuickTilts();
-    // Rebuild after a short delay to ensure refs are populated
     const buildTimer = setTimeout(buildQuickTilts, 500);
 
     const handleMouseMove = (e: MouseEvent) => {
-      const cx = window.innerWidth / 2;
-      const normalizedX = (e.clientX - cx) / cx; // -1 to +1
-      // Map to ±5 degrees — subtle enough to feel natural
-      const tilt = normalizedX * 5;
-      Object.values(quickTiltRefs.current).forEach((quickTilt) => {
-        if (typeof quickTilt === "function") {
-          quickTilt(tilt);
+      let closestCampaignId: string | null = null;
+      let minDistance = 999999;
+
+      activeCampaigns.forEach((c) => {
+        const primaryEl = adRefs.current[`${c.id}_primary`];
+        if (!primaryEl) return;
+
+        const rect = primaryEl.getBoundingClientRect();
+        // Check if character is currently visible in viewport
+        if (rect.right > 0 && rect.left < window.innerWidth && rect.width > 0) {
+          const charCenterX = rect.left + rect.width / 2;
+          const charCenterY = rect.top + rect.height / 2;
+          const dx = e.clientX - charCenterX;
+          const dy = e.clientY - charCenterY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestCampaignId = c.id;
+          }
+
+          // Tilt calculation based on cursor relative position
+          const quickTilt = quickTiltRefs.current[`${c.id}_primary`];
+          if (typeof quickTilt === "function") {
+            if (dist < 260) {
+              const tilt = Math.max(-12, Math.min(12, (dx / 260) * 12));
+              quickTilt(tilt);
+            } else {
+              quickTilt(0);
+            }
+          }
         }
       });
+
+      // Handle proximity zones
+      if (closestCampaignId && minDistance < 120) {
+        setProximityCampaignId(closestCampaignId);
+        if (masterTlRef.current && !actionMenuCampaignId && !hoveredCampaignId) {
+          gsap.to(masterTlRef.current, { timeScale: 0.15, duration: 0.3, ease: "power1.out" });
+        }
+      } else if (closestCampaignId && minDistance < 220) {
+        setProximityCampaignId(closestCampaignId);
+        if (masterTlRef.current && !actionMenuCampaignId && !hoveredCampaignId) {
+          gsap.to(masterTlRef.current, { timeScale: 0.6, duration: 0.4, ease: "power1.out" });
+        }
+      } else {
+        setProximityCampaignId(null);
+        if (masterTlRef.current && !actionMenuCampaignId && !hoveredCampaignId && !isUserIdle) {
+          gsap.to(masterTlRef.current, { timeScale: 1.0, duration: 0.5, ease: "power2.out" });
+        }
+      }
     };
 
-    // Reset tilt on mouse leave
     const handleMouseLeave = () => {
+      setProximityCampaignId(null);
       Object.values(quickTiltRefs.current).forEach((quickTilt) => {
-        if (typeof quickTilt === "function") {
-          quickTilt(0);
-        }
+        if (typeof quickTilt === "function") quickTilt(0);
       });
+      if (masterTlRef.current && !actionMenuCampaignId && !hoveredCampaignId && !isUserIdle) {
+        gsap.to(masterTlRef.current, { timeScale: 1.0, duration: 0.5, ease: "power2.out" });
+      }
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
@@ -235,7 +384,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
       window.removeEventListener("mousemove", handleMouseMove);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [isMounted, activeCampaignKey]);
+  }, [isMounted, isQuiet, activeCampaignKey, activeCampaigns, actionMenuCampaignId, hoveredCampaignId, isUserIdle]);
 
   // ============================================================
   // SCROLL SPEED BOOST — ScrollTrigger drives timeline timeScale
@@ -583,22 +732,47 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
           campTl.to({}, { duration: 2.0 });
         }
         // ----------------------------------------------------
-        // 4. SOLO MODE
+        // 4. SOLO MODE (with Edge Resting Spot)
         // ----------------------------------------------------
         else {
           campTl.set(primaryEl, { x: -650, y: 0, visibility: "visible", opacity: 1 });
 
-          // Smooth continuous butter glide all the way across
+          // Phase A: Glide smoothly across page towards the right edge parking zone
+          const parkX = Math.max(w * 0.55, w - 380);
+          campTl.to(primaryEl, {
+            x: parkX,
+            duration: 8.0 / charSpeed,
+            ease: EASE_SUSPENSION,
+          });
+
+          // Phase B: Resting spot & friendly wave at the right edge
+          campTl.to({}, {
+            duration: 3.2,
+            onStart: () => {
+              setActiveDialogues((prev) => ({
+                ...prev,
+                [campaign.id]: {
+                  char1: campaign.bubbleText || "Special deals available today! ✨",
+                },
+              }));
+              setEmotionStates((prev) => ({ ...prev, [campaign.id]: "EXCITED" }));
+            },
+            onComplete: () => {
+              clearDialogue(campaign.id);
+            },
+          });
+
+          // Phase C: Resume and smoothly exit off right screen edge
           campTl.to(primaryEl, {
             x: w + 650,
-            duration: 13 / charSpeed,
-            ease: "none",
+            duration: 4.2 / charSpeed,
+            ease: "power1.in",
           });
 
           if (innerPrimaryEl) {
             gsap.to(innerPrimaryEl, {
-              y: -8,
-              duration: 1.5,
+              y: -6,
+              duration: 1.4,
               repeat: -1,
               yoyo: true,
               ease: "sine.inOut",
@@ -713,89 +887,55 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
 
   if (!isMounted || activeCampaigns.length === 0) return null;
 
+  const topCampaign = activeCampaigns[0];
+
   return (
-    <div
-      ref={containerRef}
-      className="fixed bottom-0 left-0 w-full h-72 pointer-events-none z-[60] overflow-hidden"
-    >
-      {activeCampaigns.map((campaign, idx) => {
-        const charMeta    = MOCK_CHARACTERS.find((ch) => ch.id === campaign.characterId);
-        const partnerMeta = MOCK_CHARACTERS.find((ch) => ch.id === campaign.partnerCharacterId)
-                            || MOCK_CHARACTERS[1];
-        const themeColor  = charMeta?.themeColor || "#2563eb";
-        const partnerColor = partnerMeta?.themeColor || "#0284c7";
+    <>
+      {/* ── PHASE 2A: ACCESSIBILITY QUIET MODE TOGGLE ── */}
+      <QuietModeToggle
+        isQuiet={isQuiet}
+        onToggle={handleToggleQuiet}
+        isReducedMotionSystem={isReducedMotionSystem}
+      />
 
-        // Vertical offset on bottom track
-        const isMulti = campaign.campaignMode !== "SOLO";
-        const bottomOffset = 14 + (idx % 2) * (isMulti ? 24 : 16);
+      {/* ── PHASE 2C: MOBILE & QUIET CORNER AD WIDGET ── */}
+      {(isQuiet || isMobile) && topCampaign && (
+        <CornerAdWidget
+          campaign={topCampaign}
+          onCampaignClick={onCampaignClick}
+          isQuietMode={isQuiet}
+        />
+      )}
 
-        const currentDialogues = activeDialogues[campaign.id] || {};
-        const isHovered = hoveredCampaignId === campaign.id;
-        const isMenuOpen = actionMenuCampaignId === campaign.id;
-        const emotion = emotionStates[campaign.id] || "IDLE";
+      {/* ── FULL VIEWPORT AD ENGINE (HIDDEN IN QUIET OR MOBILE MODE) ── */}
+      <div
+        ref={containerRef}
+        className={`fixed bottom-0 left-0 w-full h-72 pointer-events-none z-[60] overflow-hidden transition-opacity duration-300 ${
+          isQuiet || isMobile ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+      >
+        {activeCampaigns.map((campaign, idx) => {
+          const charMeta    = MOCK_CHARACTERS.find((ch) => ch.id === campaign.characterId);
+          const partnerMeta = MOCK_CHARACTERS.find((ch) => ch.id === campaign.partnerCharacterId)
+                              || MOCK_CHARACTERS[1];
+          const themeColor  = charMeta?.themeColor || "#2563eb";
+          const partnerColor = partnerMeta?.themeColor || "#0284c7";
 
-        return (
-          <React.Fragment key={campaign.id}>
-            {/* ---- PRIMARY CHARACTER ---- */}
-            <div
-              ref={(el) => { adRefs.current[`${campaign.id}_primary`] = el; }}
-              onMouseEnter={() => handleMouseEnter(campaign.id)}
-              onMouseLeave={() => handleMouseLeave(campaign.id)}
-              onClick={(e) => handleFirstClick(e, campaign)}
-              className="absolute left-0 pointer-events-auto cursor-pointer group"
-              style={{
-                transform: "translateX(-1200px)",
-                opacity: 0,
-                visibility: "hidden",
-                bottom: `${bottomOffset}px`,
-              }}
-            >
-              {/* Click-to-interact action menu */}
-              <div className="character-action-menu">
-                <CharacterActionMenu
-                  campaign={campaign}
-                  isVisible={isMenuOpen}
-                  onViewProducts={() => handleViewProducts(campaign)}
-                  onComeBackLater={() => handleComeBackLater(campaign.id)}
-                  onShareDeal={() => handleShareDeal(campaign)}
-                />
-              </div>
+          // Vertical offset on bottom track
+          const isMulti = campaign.campaignMode !== "SOLO";
+          const bottomOffset = 14 + (idx % 2) * (isMulti ? 24 : 16);
 
-              {/* Hover preview tooltip (only when menu not open) */}
-              {!isMenuOpen && (
-                <CharacterPreviewTooltip campaign={campaign} isVisible={isHovered} />
-              )}
+          const currentDialogues = activeDialogues[campaign.id] || {};
+          const isHovered = hoveredCampaignId === campaign.id;
+          const isMenuOpen = actionMenuCampaignId === campaign.id;
+          const isProximityActive = proximityCampaignId === campaign.id;
+          const emotion = emotionStates[campaign.id] || "IDLE";
 
+          return (
+            <React.Fragment key={campaign.id}>
+              {/* ---- PRIMARY CHARACTER ---- */}
               <div
-                ref={(el) => { innerAdRefs.current[`${campaign.id}_primary`] = el; }}
-                className={`relative transition-drop-shadow duration-200 ${
-                  emotion === "EXCITED" ? "drop-shadow-2xl" : ""
-                }`}
-              >
-                <CharacterSprite
-                  characterId={campaign.characterId}
-                  ctaText={
-                    campaign.campaignMode !== "SOLO" && campaign.mergedBannerText
-                      ? campaign.mergedBannerText
-                      : campaign.ctaText
-                  }
-                  bubbleText={currentDialogues.char1 || campaign.bubbleText}
-                  themeColor={themeColor}
-                  flagShape={campaign.flagShape || charMeta?.defaultFlagShape}
-                  accessory={campaign.accessory}
-                  wheelColor={campaign.wheelColor}
-                  size={campaign.characterSize || "large"}
-                  isHovered={isHovered || isMenuOpen}
-                  isTalking={Boolean(currentDialogues.char1)}
-                  isWaving={isHovered || isMenuOpen}
-                />
-              </div>
-            </div>
-
-            {/* ---- PARTNER CHARACTER (CO_OP / CONVOY / RACE_OVERTAKE) ---- */}
-            {campaign.campaignMode !== "SOLO" && (
-              <div
-                ref={(el) => { adRefs.current[`${campaign.id}_partner`] = el; }}
+                ref={(el) => { adRefs.current[`${campaign.id}_primary`] = el; }}
                 onMouseEnter={() => handleMouseEnter(campaign.id)}
                 onMouseLeave={() => handleMouseLeave(campaign.id)}
                 onClick={(e) => handleFirstClick(e, campaign)}
@@ -804,30 +944,88 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
                   transform: "translateX(-1200px)",
                   opacity: 0,
                   visibility: "hidden",
-                  bottom: `${bottomOffset + (campaign.campaignMode === "RACE_OVERTAKE" ? 22 : 0)}px`,
+                  bottom: `${bottomOffset}px`,
                 }}
               >
+                {/* Click-to-interact action menu */}
+                <div className="character-action-menu">
+                  <CharacterActionMenu
+                    campaign={campaign}
+                    isVisible={isMenuOpen}
+                    onViewProducts={() => handleViewProducts(campaign)}
+                    onComeBackLater={() => handleComeBackLater(campaign.id)}
+                    onShareDeal={() => handleShareDeal(campaign)}
+                  />
+                </div>
+
+                {/* Hover preview tooltip (only when menu not open) */}
+                {!isMenuOpen && (
+                  <CharacterPreviewTooltip campaign={campaign} isVisible={isHovered} />
+                )}
+
                 <div
-                  ref={(el) => { innerAdRefs.current[`${campaign.id}_partner`] = el; }}
-                  className="relative transition-transform duration-200"
+                  ref={(el) => { innerAdRefs.current[`${campaign.id}_primary`] = el; }}
+                  className={`relative transition-drop-shadow duration-200 ${
+                    emotion === "EXCITED" || isProximityActive ? "drop-shadow-2xl" : ""
+                  }`}
                 >
                   <CharacterSprite
-                    characterId={campaign.partnerCharacterId || "wheelchair_boy"}
-                    ctaText={campaign.ctaText}
-                    bubbleText={currentDialogues.char2 || partnerMeta.defaultBubble}
-                    themeColor={partnerColor}
-                    flagShape={partnerMeta.defaultFlagShape || "swallowtail"}
+                    characterId={campaign.characterId}
+                    ctaText={
+                      campaign.campaignMode !== "SOLO" && campaign.mergedBannerText
+                        ? campaign.mergedBannerText
+                        : campaign.ctaText
+                    }
+                    bubbleText={currentDialogues.char1 || campaign.bubbleText}
+                    themeColor={themeColor}
+                    flagShape={campaign.flagShape || charMeta?.defaultFlagShape}
+                    accessory={campaign.accessory}
+                    wheelColor={campaign.wheelColor}
                     size={campaign.characterSize || "large"}
-                    isHovered={isHovered}
-                    isTalking={Boolean(currentDialogues.char2)}
+                    isHovered={isHovered || isMenuOpen || isProximityActive}
+                    isTalking={Boolean(currentDialogues.char1)}
+                    isWaving={isHovered || isMenuOpen || isProximityActive || isUserIdle}
                   />
                 </div>
               </div>
-            )}
-          </React.Fragment>
-        );
-      })}
-    </div>
+
+              {/* ---- PARTNER CHARACTER (CO_OP / CONVOY / RACE_OVERTAKE) ---- */}
+              {campaign.campaignMode !== "SOLO" && (
+                <div
+                  ref={(el) => { adRefs.current[`${campaign.id}_partner`] = el; }}
+                  onMouseEnter={() => handleMouseEnter(campaign.id)}
+                  onMouseLeave={() => handleMouseLeave(campaign.id)}
+                  onClick={(e) => handleFirstClick(e, campaign)}
+                  className="absolute left-0 pointer-events-auto cursor-pointer group"
+                  style={{
+                    transform: "translateX(-1200px)",
+                    opacity: 0,
+                    visibility: "hidden",
+                    bottom: `${bottomOffset + (campaign.campaignMode === "RACE_OVERTAKE" ? 22 : 0)}px`,
+                  }}
+                >
+                  <div
+                    ref={(el) => { innerAdRefs.current[`${campaign.id}_partner`] = el; }}
+                    className="relative transition-transform duration-200"
+                  >
+                    <CharacterSprite
+                      characterId={campaign.partnerCharacterId || "wheelchair_boy"}
+                      ctaText={campaign.ctaText}
+                      bubbleText={currentDialogues.char2 || partnerMeta.defaultBubble}
+                      themeColor={partnerColor}
+                      flagShape={partnerMeta.defaultFlagShape || "swallowtail"}
+                      size={campaign.characterSize || "large"}
+                      isHovered={isHovered || isProximityActive}
+                      isTalking={Boolean(currentDialogues.char2)}
+                    />
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    </>
   );
 };
 
