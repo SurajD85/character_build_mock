@@ -16,6 +16,8 @@ interface CharacterSpriteProps {
   isHovered?: boolean;
   isTalking?: boolean;
   isWaving?: boolean;
+  hideBanner?: boolean;
+  hideBubble?: boolean;
 }
 
 export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
@@ -30,6 +32,8 @@ export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
   isHovered = false,
   isTalking = false,
   isWaving = false,
+  hideBanner = false,
+  hideBubble = false,
 }) => {
   // Typewriter: animate bubble text character by character
   const typedBubble = useTypewriter(bubbleText, 30);
@@ -109,6 +113,8 @@ export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
 
   // Render customizable trailing flag / banner depending on shape
   const renderFlagBanner = (icon: string) => {
+    if (hideBanner || !ctaText) return null;
+
     let clipPathStyle: string | undefined = "polygon(0% 0%, 100% 0%, 82% 50%, 100% 100%, 0% 100%)";
     let shapePadding = "pr-8";
     let badgeBorderClass = "border-y border-l border-white/40 shadow-xl";
@@ -159,7 +165,7 @@ export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
       {renderAccessoryOverlay()}
       
       {/* --- SPEECH BUBBLE OVERHEAD --- */}
-      {bubbleText && (
+      {!hideBubble && bubbleText && (
         <div
           className={`absolute -top-14 left-10 z-40 transition-all duration-300 transform origin-bottom ${
             isHovered || isTalking ? "scale-105 -translate-y-1" : "scale-100"

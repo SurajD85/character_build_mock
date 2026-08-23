@@ -40,6 +40,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
   const [isMobile, setIsMobile] = useState(false);
   const [isUserIdle, setIsUserIdle] = useState(false);
   const [proximityCampaignId, setProximityCampaignId] = useState<string | null>(null);
+  const [parkedCampaignId, setParkedCampaignId] = useState<string | null>(null);
 
   // Which campaign currently has the click-to-interact action menu open
   const [actionMenuCampaignId, setActionMenuCampaignId] = useState<string | null>(null);
@@ -732,40 +733,36 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
           campTl.to({}, { duration: 2.0 });
         }
         // ----------------------------------------------------
-        // 4. SOLO MODE (with Edge Resting Spot)
+        // 4. SOLO MODE (with Edge Resting Spot - Clean mascot only)
         // ----------------------------------------------------
         else {
           campTl.set(primaryEl, { x: -650, y: 0, visibility: "visible", opacity: 1 });
 
           // Phase A: Glide smoothly across page towards the right edge parking zone
-          const parkX = Math.max(w * 0.55, w - 380);
+          const parkX = Math.max(w * 0.55, w - 240);
           campTl.to(primaryEl, {
             x: parkX,
             duration: 8.0 / charSpeed,
             ease: EASE_SUSPENSION,
           });
 
-          // Phase B: Resting spot & friendly wave at the right edge
+          // Phase B: Clean resting spot at right edge (no banner, no cards, clean mascot only)
           campTl.to({}, {
-            duration: 3.2,
+            duration: 4.0,
             onStart: () => {
-              setActiveDialogues((prev) => ({
-                ...prev,
-                [campaign.id]: {
-                  char1: campaign.bubbleText || "Special deals available today! ✨",
-                },
-              }));
-              setEmotionStates((prev) => ({ ...prev, [campaign.id]: "EXCITED" }));
+              setParkedCampaignId(campaign.id);
+              clearDialogue(campaign.id);
+              setEmotionStates((prev) => ({ ...prev, [campaign.id]: "IDLE" }));
             },
             onComplete: () => {
-              clearDialogue(campaign.id);
+              setParkedCampaignId(null);
             },
           });
 
           // Phase C: Resume and smoothly exit off right screen edge
           campTl.to(primaryEl, {
             x: w + 650,
-            duration: 4.2 / charSpeed,
+            duration: 3.8 / charSpeed,
             ease: "power1.in",
           });
 
@@ -929,6 +926,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
           const isHovered = hoveredCampaignId === campaign.id;
           const isMenuOpen = actionMenuCampaignId === campaign.id;
           const isProximityActive = proximityCampaignId === campaign.id;
+          const isParked = parkedCampaignId === campaign.id && !isHovered && !isMenuOpen;
           const emotion = emotionStates[campaign.id] || "IDLE";
 
           return (
@@ -959,7 +957,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
                 </div>
 
                 {/* Hover preview tooltip (only when menu not open) */}
-                {!isMenuOpen && (
+                {!isMenuOpen && !isParked && (
                   <CharacterPreviewTooltip campaign={campaign} isVisible={isHovered} />
                 )}
 
@@ -984,7 +982,9 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
                     size={campaign.characterSize || "large"}
                     isHovered={isHovered || isMenuOpen || isProximityActive}
                     isTalking={Boolean(currentDialogues.char1)}
-                    isWaving={isHovered || isMenuOpen || isProximityActive || isUserIdle}
+                    isWaving={isHovered || isMenuOpen || isProximityActive || isUserIdle || isParked}
+                    hideBanner={isParked}
+                    hideBubble={isParked}
                   />
                 </div>
               </div>
