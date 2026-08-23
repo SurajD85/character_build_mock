@@ -151,13 +151,13 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsAdminOpen(true)}
-            className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-extrabold rounded-xl shadow-lg shadow-blue-600/40 transition-all flex items-center gap-1.5"
+          <Link
+            href="/admin"
+            className="px-4 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black rounded-xl shadow-lg shadow-blue-600/40 transition-all flex items-center gap-1.5 border border-blue-400/30"
           >
-            <span>💼 Launch Full Admin CMS Panel</span>
-            <span className="bg-blue-700 px-1.5 py-0.5 rounded text-[10px]">CMS</span>
-          </button>
+            <span>💼 Ad Revenue &amp; CMS Studio Page</span>
+            <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-black">NEW PAGE ↗</span>
+          </Link>
         </div>
       </div>
 
@@ -198,6 +198,14 @@ export default function Home() {
                 </button>
               );
             })}
+            <div className="h-4 w-px bg-slate-300 mx-1"></div>
+            <Link
+              href="/admin"
+              className="px-3.5 py-2 rounded-xl text-xs font-black text-indigo-700 hover:bg-indigo-50 border border-indigo-200 flex items-center gap-1.5 transition-all"
+            >
+              <span>⚙️ CMS Studio</span>
+              <span className="text-[10px] text-indigo-500 font-bold">↗</span>
+            </Link>
           </nav>
         </div>
       </header>
@@ -325,17 +333,7 @@ export default function Home() {
         onCampaignClick={handleCampaignClick}
       />
 
-      {/* --- ADMIN CMS CONTROL PANEL MODAL --- */}
-      <AdminCmsPanel
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-        campaigns={campaigns}
-        onSaveCampaign={handleSaveCampaign}
-        onDeleteCampaign={handleDeleteCampaign}
-        onToggleStatus={handleToggleStatus}
-      />
-
-      {/* --- ADVERTISER CATALOG SHOWCASE MODAL --- */}
+      {/* --- ADVERTISER CATALOG SHOWCASE MODAL (FALLBACK) --- */}
       <AdvertiserModal
         campaign={selectedModalCampaign}
         onClose={() => setSelectedModalCampaign(null)}
