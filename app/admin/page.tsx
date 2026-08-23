@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { AdCampaign, CharacterAsset, CharacterId, CampaignMode, PageSlug, CharacterSize, FlagShape, CharacterAccessory } from "../../types/campaign";
+import { AdCampaign, CharacterAsset, CharacterId, CampaignMode, PageSlug, CharacterSize, FlagShape } from "../../types/campaign";
 import { INITIAL_CAMPAIGNS, MOCK_CHARACTERS, MOCK_ADVERTISERS } from "../../lib/mockData";
 import { CharacterLibrary } from "../../components/CharacterLibrary";
 import { CharacterSprite } from "../../components/CharacterSprite";
@@ -103,29 +103,29 @@ export default function AdminCmsPage() {
   const partnerCharMeta = MOCK_CHARACTERS.find(c => c.id === editingCampaign?.partnerCharacterId) || MOCK_CHARACTERS[1];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-32 relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-32 relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
       
-      {/* --- TOP STICKY CMS HEADER --- */}
-      <header className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 shadow-xl">
+      {/* --- TOP STICKY CMS HEADER (CLEAN LIGHT THEME) --- */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-slate-700 shadow-sm"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-slate-200 shadow-sm"
             >
               <span>←</span>
               <span>Back to Marketplace</span>
             </Link>
-            <div className="h-6 w-px bg-slate-800 hidden sm:block"></div>
+            <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-xl shadow-lg shadow-blue-500/20">
+              <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-xl shadow-md text-white">
                 🎭
               </div>
               <div>
-                <h1 className="text-base md:text-lg font-black text-white leading-tight">
+                <h1 className="text-base md:text-lg font-black text-slate-900 leading-tight">
                   Ad Slot Revenue &amp; Choreography CMS
                 </h1>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-slate-500 font-semibold">
                   Configure solo cruisers, co-op dialogues, hero convoys &amp; sponsor sizing tiers.
                 </p>
               </div>
@@ -136,14 +136,14 @@ export default function AdminCmsPage() {
             {activeTab === "edit" ? (
               <button
                 onClick={() => setActiveTab("list")}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-bold transition-all"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all border border-slate-200"
               >
                 Cancel &amp; View All
               </button>
             ) : (
               <button
                 onClick={handleStartNew}
-                className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-black text-xs shadow-lg shadow-blue-600/30 transition-all flex items-center gap-2"
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs shadow-lg shadow-blue-600/30 transition-all flex items-center gap-2"
               >
                 <span>+</span>
                 <span>Create New Ad Campaign</span>
@@ -158,28 +158,28 @@ export default function AdminCmsPage() {
         
         {/* --- 4 REVENUE & PERFORMANCE METRIC TILES --- */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 shadow-sm space-y-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Active Ad Slots</span>
-            <div className="text-3xl font-black text-blue-400">{activeCount} / {campaigns.length}</div>
-            <p className="text-[10px] text-slate-500 font-medium">Currently cruising on site</p>
+          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Active Ad Slots</span>
+            <div className="text-3xl font-black text-blue-600">{activeCount} / {campaigns.length}</div>
+            <p className="text-[11px] text-slate-400 font-medium">Currently cruising on site</p>
           </div>
 
-          <div className="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 shadow-sm space-y-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Co-Op &amp; Convoy Slots</span>
-            <div className="text-3xl font-black text-purple-400">{multiCharCount} Active</div>
-            <p className="text-[10px] text-slate-500 font-medium">Multi-character encounters</p>
+          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Co-Op &amp; Convoy Slots</span>
+            <div className="text-3xl font-black text-purple-600">{multiCharCount} Active</div>
+            <p className="text-[11px] text-slate-400 font-medium">Multi-character encounters</p>
           </div>
 
-          <div className="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 shadow-sm space-y-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Est. Monthly Revenue</span>
-            <div className="text-3xl font-black text-emerald-400">${estRevenue.toLocaleString()}</div>
-            <p className="text-[10px] text-slate-500 font-medium">$850/mo standard slot rate</p>
+          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Est. Monthly Revenue</span>
+            <div className="text-3xl font-black text-emerald-600">${estRevenue.toLocaleString()}</div>
+            <p className="text-[11px] text-slate-400 font-medium">$850/mo standard slot rate</p>
           </div>
 
-          <div className="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 shadow-sm space-y-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Total Dialogue Clicks</span>
-            <div className="text-3xl font-black text-amber-400">{totalClicks.toLocaleString()}</div>
-            <p className="text-[10px] text-slate-500 font-medium">High user engagement</p>
+          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Total Dialogue Clicks</span>
+            <div className="text-3xl font-black text-amber-600">{totalClicks.toLocaleString()}</div>
+            <p className="text-[11px] text-slate-400 font-medium">High user engagement</p>
           </div>
         </div>
 
@@ -189,71 +189,70 @@ export default function AdminCmsPage() {
           /* ============================================================ */
           /* --- CAMPAIGN LIST VIEW --- */
           /* ============================================================ */
-          <div className="bg-slate-900/80 rounded-3xl border border-slate-800 overflow-hidden shadow-xl">
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+          <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <div>
-                <h2 className="text-lg font-black text-white">Advertiser Choreography Campaigns</h2>
-                <p className="text-xs text-slate-400">Manage all solo, co-op, convoy, and overtake character campaigns.</p>
+                <h2 className="text-lg font-black text-slate-900">Advertiser Choreography Campaigns</h2>
+                <p className="text-xs text-slate-500">Manage all solo, co-op, convoy, and overtake character campaigns.</p>
               </div>
-              <span className="text-xs font-bold text-slate-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+              <span className="text-xs font-bold text-slate-600 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">
                 {campaigns.length} total configured
               </span>
             </div>
 
-            <div className="divide-y divide-slate-800/80">
+            <div className="divide-y divide-slate-100">
               {campaigns.map((camp) => {
                 const charMeta = MOCK_CHARACTERS.find(c => c.id === camp.characterId);
-                const partnerMeta = MOCK_CHARACTERS.find(c => c.id === camp.partnerCharacterId);
                 const isActive = camp.status === "ACTIVE";
 
                 return (
-                  <div key={camp.id} className="p-6 hover:bg-slate-800/40 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div key={camp.id} className="p-6 hover:bg-slate-50/80 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     
                     {/* Left: Character Avatar & Campaign Details */}
                     <div className="flex items-start gap-4 flex-1">
-                      <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
+                      <div className="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
                         {charMeta?.icon || "🎭"}
                       </div>
                       
                       <div className="space-y-1.5">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="font-extrabold text-white text-base">{camp.advertiserName}</h3>
+                          <h3 className="font-extrabold text-slate-900 text-base">{camp.advertiserName}</h3>
                           
                           {/* Mode Badge */}
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                            camp.campaignMode === "CO_OP" ? "bg-purple-500/20 text-purple-300 border border-purple-400/30" :
-                            camp.campaignMode === "CONVOY" ? "bg-blue-500/20 text-blue-300 border border-blue-400/30" :
-                            camp.campaignMode === "RACE_OVERTAKE" ? "bg-amber-500/20 text-amber-300 border border-amber-400/30" :
-                            "bg-slate-800 text-slate-300 border border-slate-700"
+                            camp.campaignMode === "CO_OP" ? "bg-purple-50 text-purple-700 border border-purple-200" :
+                            camp.campaignMode === "CONVOY" ? "bg-blue-50 text-blue-700 border border-blue-200" :
+                            camp.campaignMode === "RACE_OVERTAKE" ? "bg-amber-50 text-amber-700 border border-amber-200" :
+                            "bg-slate-100 text-slate-700 border border-slate-200"
                           }`}>
                             {camp.campaignMode} MODE
                           </span>
 
                           {/* Sizing Badge */}
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                            (camp.characterSize || "large") === "large" ? "bg-amber-500/20 text-amber-300 border border-amber-400/30" :
-                            camp.characterSize === "medium" ? "bg-blue-500/20 text-blue-300 border border-blue-400/30" :
-                            "bg-slate-800 text-slate-400 border border-slate-700"
+                            (camp.characterSize || "large") === "large" ? "bg-amber-50 text-amber-800 border border-amber-200" :
+                            camp.characterSize === "medium" ? "bg-blue-50 text-blue-800 border border-blue-200" :
+                            "bg-slate-100 text-slate-600 border border-slate-200"
                           }`}>
                             {camp.characterSize === "small" ? "COMPACT (SM)" : camp.characterSize === "medium" ? "STANDARD (MD)" : "HERO (LG)"}
                           </span>
 
                           {/* Destination Badge */}
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
                             {camp.clickBehavior === "PAGE" ? "STOREFRONT" : camp.clickBehavior || "PAGE"}
                           </span>
                         </div>
 
-                        <p className="text-xs text-slate-400">
-                          <strong className="text-slate-300">Banner:</strong> &ldquo;{camp.ctaText}&rdquo;
+                        <p className="text-xs text-slate-600">
+                          <strong className="text-slate-800">Banner:</strong> &ldquo;{camp.ctaText}&rdquo;
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 pt-1">
+                        <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 pt-1">
                           <span><strong>Pages:</strong> {camp.assignedPages.join(", ")}</span>
                           <span>•</span>
                           <span><strong>Schedule:</strong> {camp.startDate} to {camp.endDate}</span>
                           <span>•</span>
-                          <span className="text-blue-400 font-bold">🎯 {camp.clicks} Clicks</span>
+                          <span className="text-blue-600 font-bold">🎯 {camp.clicks} Clicks</span>
                         </div>
                       </div>
                     </div>
@@ -264,8 +263,8 @@ export default function AdminCmsPage() {
                         onClick={() => handleToggleStatus(camp.id)}
                         className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
                           isActive
-                            ? "bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30"
-                            : "bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700"
+                            ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200"
+                            : "bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-200"
                         }`}
                       >
                         {isActive ? "✓ Active" : "Paused"}
@@ -280,7 +279,7 @@ export default function AdminCmsPage() {
 
                       <button
                         onClick={() => handleDelete(camp.id)}
-                        className="p-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-xl transition-all border border-slate-700 hover:border-red-400/30"
+                        className="p-2 bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-xl transition-all border border-slate-200 hover:border-red-200"
                         title="Delete Campaign"
                       >
                         🗑️
@@ -298,17 +297,17 @@ export default function AdminCmsPage() {
           /* ============================================================ */
           /* --- CAMPAIGN BUILDER & EDITOR FORM --- */
           /* ============================================================ */
-          <form onSubmit={handleSubmitForm} className="bg-slate-900/90 rounded-3xl border border-slate-800 p-8 space-y-8 shadow-2xl">
+          <form onSubmit={handleSubmitForm} className="bg-white rounded-3xl border border-slate-200 p-8 space-y-8 shadow-sm">
             
-            <div className="border-b border-slate-800 pb-5 flex items-center justify-between">
+            <div className="border-b border-slate-100 pb-5 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-black text-white">Campaign Choreography Studio</h2>
-                <p className="text-xs text-slate-400">Design dynamic animated ads, multi-character encounters, and sizing tiers.</p>
+                <h2 className="text-xl font-black text-slate-900">Campaign Choreography Studio</h2>
+                <p className="text-xs text-slate-500">Design dynamic animated ads, multi-character encounters, and sizing tiers.</p>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTab("list")}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200"
               >
                 ← Back to Campaigns
               </button>
@@ -316,7 +315,7 @@ export default function AdminCmsPage() {
 
             {/* 1. Choreography Encounter Mode */}
             <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
                 1. Campaign Encounter Mode *
               </label>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -334,13 +333,13 @@ export default function AdminCmsPage() {
                       onClick={() => setEditingCampaign({ ...editingCampaign, campaignMode: mode.id as CampaignMode })}
                       className={`p-4 rounded-2xl border-2 text-left transition-all ${
                         isSel
-                          ? "border-blue-500 bg-blue-500/10 text-white font-bold shadow-lg shadow-blue-500/20 ring-2 ring-blue-500/30"
-                          : "border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-white"
+                          ? "border-blue-600 bg-blue-50/60 text-blue-950 font-bold shadow-md ring-2 ring-blue-500/20"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
                       }`}
                     >
                       <div className="text-2xl mb-1">{mode.icon}</div>
-                      <div className="text-xs font-extrabold text-white">{mode.title}</div>
-                      <div className="text-[11px] text-slate-400 mt-1 leading-relaxed">{mode.desc}</div>
+                      <div className="text-xs font-extrabold text-slate-900">{mode.title}</div>
+                      <div className="text-[11px] text-slate-500 mt-1 leading-relaxed">{mode.desc}</div>
                     </button>
                   );
                 })}
@@ -349,7 +348,7 @@ export default function AdminCmsPage() {
 
             {/* 1B. Flag Shape & Geometry */}
             <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
                 1B. Flag Shape &amp; Geometry *
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -367,12 +366,12 @@ export default function AdminCmsPage() {
                       onClick={() => setEditingCampaign({ ...editingCampaign, flagShape: f.shape as FlagShape })}
                       className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
                         isSel
-                          ? "border-blue-500 bg-blue-500/10 text-white font-bold shadow-md"
-                          : "border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-white"
+                          ? "border-blue-600 bg-blue-50/60 text-blue-950 font-bold shadow-sm"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
                       }`}
                     >
-                      <div className="text-xs font-extrabold text-white">{f.title}</div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">{f.desc}</div>
+                      <div className="text-xs font-extrabold text-slate-900">{f.title}</div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">{f.desc}</div>
                     </button>
                   );
                 })}
@@ -381,7 +380,7 @@ export default function AdminCmsPage() {
 
             {/* 1C. Character Sizing Tier */}
             <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
                 1C. Character Sizing &amp; Sponsor Tier *
               </label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -398,15 +397,15 @@ export default function AdminCmsPage() {
                       onClick={() => setEditingCampaign({ ...editingCampaign, characterSize: s.size as CharacterSize })}
                       className={`p-4 rounded-2xl border-2 text-left transition-all ${
                         isSel
-                          ? "border-amber-500 bg-amber-500/10 text-white font-bold shadow-lg shadow-amber-500/20"
-                          : "border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-white"
+                          ? "border-amber-500 bg-amber-50/60 text-amber-950 font-bold shadow-md"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
                       }`}
                     >
-                      <div className="text-xs font-extrabold text-white flex items-center justify-between">
+                      <div className="text-xs font-extrabold text-slate-900 flex items-center justify-between">
                         <span>{s.title}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-bold border border-slate-700">{s.badge}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">{s.badge}</span>
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">{s.desc}</div>
+                      <div className="text-[11px] text-slate-500 mt-1.5 leading-relaxed">{s.desc}</div>
                     </button>
                   );
                 })}
@@ -416,7 +415,7 @@ export default function AdminCmsPage() {
             {/* 2. Advertiser Name & CTA */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-extrabold text-slate-300 mb-1.5">
+                <label className="block text-xs font-extrabold text-slate-700 mb-1.5">
                   2. Primary Advertiser Name *
                 </label>
                 <input
@@ -424,12 +423,12 @@ export default function AdminCmsPage() {
                   required
                   value={editingCampaign?.advertiserName || ""}
                   onChange={(e) => setEditingCampaign({ ...editingCampaign, advertiserName: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-extrabold text-slate-300 mb-1.5">
+                <label className="block text-xs font-extrabold text-slate-700 mb-1.5">
                   3. Dynamic Flag Banner CTA Text *
                 </label>
                 <input
@@ -437,14 +436,14 @@ export default function AdminCmsPage() {
                   required
                   value={editingCampaign?.ctaText || ""}
                   onChange={(e) => setEditingCampaign({ ...editingCampaign, ctaText: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
             </div>
 
             {/* 2B. User Click Destination Action */}
             <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
                 2B. User Click Destination Action *
               </label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -461,15 +460,15 @@ export default function AdminCmsPage() {
                       onClick={() => setEditingCampaign({ ...editingCampaign, clickBehavior: dest.id as any })}
                       className={`p-4 rounded-2xl border-2 text-left transition-all ${
                         isSel
-                          ? "border-emerald-500 bg-emerald-500/10 text-white font-bold shadow-lg shadow-emerald-500/20"
-                          : "border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-white"
+                          ? "border-emerald-600 bg-emerald-50/60 text-emerald-950 font-bold shadow-md"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
                       }`}
                     >
-                      <div className="text-xs font-extrabold text-white flex items-center gap-1.5">
+                      <div className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
                         <span>{dest.icon}</span>
                         <span>{dest.title}</span>
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-1 leading-relaxed">{dest.desc}</div>
+                      <div className="text-[11px] text-slate-500 mt-1 leading-relaxed">{dest.desc}</div>
                     </button>
                   );
                 })}
@@ -478,10 +477,10 @@ export default function AdminCmsPage() {
 
             {/* 3. Character Picker & Outfit Customizer */}
             <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
                 3. Primary Character &amp; Outfit Customizer (16 Available) *
               </label>
-              <div className="bg-slate-950 p-5 rounded-3xl border border-slate-800">
+              <div className="bg-slate-50 p-5 rounded-3xl border border-slate-200">
                 <CharacterLibrary
                   selectedCharacterId={(editingCampaign?.characterId || "wheelchair_boy") as CharacterId}
                   onSelectCharacter={(char: CharacterAsset) => {
@@ -498,14 +497,14 @@ export default function AdminCmsPage() {
             </div>
 
             {/* 4. Live Dialogue & Encounter Flow Preview */}
-            <div className="p-6 bg-slate-950 rounded-3xl border border-slate-800 space-y-4">
+            <div className="p-6 bg-slate-50 rounded-3xl border border-slate-200 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-purple-400 uppercase tracking-wider flex items-center gap-2">
+                <span className="text-xs font-black text-purple-700 uppercase tracking-wider flex items-center gap-2">
                   <span>🎬</span> Live Encounter Studio Preview ({editingCampaign?.campaignMode || "SOLO"})
                 </span>
-                <span className="text-[10px] text-slate-400">Interactive Preview</span>
+                <span className="text-[10px] text-slate-500 font-semibold">Interactive Preview</span>
               </div>
-              <div className="h-36 bg-slate-900/90 rounded-2xl flex items-center justify-center gap-6 overflow-hidden relative border border-slate-800">
+              <div className="h-36 bg-white rounded-2xl flex items-center justify-center gap-6 overflow-hidden relative border border-slate-200 shadow-inner">
                 <div className="transform">
                   <CharacterSprite
                     characterId={editingCampaign?.characterId || "wheelchair_boy"}
@@ -534,7 +533,7 @@ export default function AdminCmsPage() {
 
             {/* 5. Page Assignment */}
             <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
                 5. Page Assignment *
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
@@ -547,12 +546,12 @@ export default function AdminCmsPage() {
                       onClick={() => handlePageToggle(pg.slug)}
                       className={`p-3.5 rounded-xl border-2 text-xs font-bold transition-all text-left flex items-center justify-between ${
                         isAssigned
-                          ? "border-blue-500 bg-blue-500/15 text-white font-black"
-                          : "border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-white"
+                          ? "border-blue-600 bg-blue-50 text-blue-900 font-black"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
                       }`}
                     >
                       <span>{pg.label}</span>
-                      {isAssigned && <span className="text-blue-400">✓</span>}
+                      {isAssigned && <span className="text-blue-600">✓</span>}
                     </button>
                   );
                 })}
@@ -560,17 +559,17 @@ export default function AdminCmsPage() {
             </div>
 
             {/* Form Actions */}
-            <div className="pt-6 border-t border-slate-800 flex items-center justify-end gap-3">
+            <div className="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setActiveTab("list")}
-                className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-all"
+                className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all border border-slate-200"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black rounded-xl text-xs shadow-xl shadow-blue-600/30 transition-all"
+                className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-xs shadow-xl shadow-blue-600/30 transition-all"
               >
                 Save &amp; Deploy Campaign to Marketplace →
               </button>

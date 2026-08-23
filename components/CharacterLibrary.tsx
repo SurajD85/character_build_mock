@@ -50,12 +50,12 @@ export const CharacterLibrary: React.FC<CharacterLibraryProps> = ({
       </div>
 
       {/* Outfit Accessory Customizer Bar */}
-      <div className="p-3 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl text-white space-y-2 border border-slate-800 shadow-inner">
+      <div className="p-3 bg-blue-50/80 rounded-2xl text-slate-900 space-y-2 border border-blue-200 shadow-sm">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-extrabold text-blue-300 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-extrabold text-blue-800 uppercase tracking-wider flex items-center gap-1.5">
             <span>🎨</span> Live Outfit Accessory Customizer
           </span>
-          <span className="text-[10px] text-slate-400 font-medium">Real-time SVG Overlay</span>
+          <span className="text-[10px] text-slate-500 font-semibold">Real-time SVG Overlay</span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
           {ACCESSORY_OPTIONS.map((acc) => {
@@ -67,8 +67,8 @@ export const CharacterLibrary: React.FC<CharacterLibraryProps> = ({
                 onClick={() => onSelectAccessory?.(acc.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap transition-all flex items-center gap-1.5 border ${
                   isActive
-                    ? "bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-500/30 scale-105"
-                    : "bg-slate-800/80 border-slate-700/60 text-slate-300 hover:bg-slate-700 hover:text-white"
+                    ? "bg-blue-600 border-blue-600 text-white shadow-md scale-105"
+                    : "bg-white border-slate-200 text-slate-700 hover:bg-slate-100"
                 }`}
               >
                 <span>{acc.icon}</span>

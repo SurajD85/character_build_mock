@@ -77,20 +77,20 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans relative pb-32 overflow-x-hidden">
       
-      {/* --- TOP ADMIN PROMOTIONAL CONTROLLER BAR --- */}
-      <div className="bg-slate-900 text-white py-2.5 px-6 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs z-50 relative shadow-md">
+      {/* --- TOP ADMIN PROMOTIONAL CONTROLLER BAR (CLEAN LIGHT THEME) --- */}
+      <div className="bg-white text-slate-800 py-2.5 px-6 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 text-xs z-50 relative shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="flex items-center gap-2 font-black text-amber-400 uppercase tracking-widest bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
-            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span>
+          <span className="flex items-center gap-2 font-black text-blue-700 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
             Prototype CMS Live Mode
           </span>
-          <span className="text-slate-300 hidden lg:inline">
-            Active Cruising Ads on this page: <strong className="text-white font-bold">{activeAdsForCurrentPage.length}</strong>
+          <span className="text-slate-500 hidden lg:inline font-medium">
+            Active Cruising Ads on this page: <strong className="text-slate-900 font-bold">{activeAdsForCurrentPage.length}</strong>
           </span>
 
           {/* Quick Character Preset Switcher */}
-          <div className="flex items-center gap-1.5 bg-slate-800/80 px-2 py-1 rounded-xl border border-slate-700">
-            <span className="text-[10px] text-slate-400 font-bold uppercase mr-1 hidden sm:inline">Select Character:</span>
+          <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200">
+            <span className="text-[10px] text-slate-500 font-bold uppercase mr-1 hidden sm:inline">Select Character:</span>
             {MOCK_CHARACTERS.map((char) => {
               const isActiveChar = campaigns.some(c => c.status === "ACTIVE" && c.characterId === char.id && (c.assignedPages.includes("all") || c.assignedPages.includes(currentPage)));
               return (
@@ -108,7 +108,7 @@ export default function Home() {
                   className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all flex items-center gap-1 ${
                     isActiveChar
                       ? "bg-blue-600 text-white shadow-md scale-105"
-                      : "bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white"
+                      : "bg-white text-slate-700 hover:bg-slate-200 hover:text-slate-900 border border-slate-200"
                   }`}
                   title={`Switch active character to ${char.name}`}
                 >
@@ -120,8 +120,8 @@ export default function Home() {
           </div>
 
           {/* Quick Size Switcher */}
-          <div className="flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-xl border border-slate-700">
-            <span className="text-[10px] text-slate-400 font-bold uppercase mr-1 hidden sm:inline">Size Tier:</span>
+          <div className="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-xl border border-slate-200">
+            <span className="text-[10px] text-slate-500 font-bold uppercase mr-1 hidden sm:inline">Size:</span>
             {(["large", "medium", "small"] as const).map((sz) => {
               const activeCampaign = campaigns[0];
               const isSelected = (activeCampaign?.characterSize || "large") === sz;
@@ -138,8 +138,8 @@ export default function Home() {
                   }}
                   className={`px-2 py-0.5 rounded-lg font-bold text-[10px] transition-all capitalize ${
                     isSelected
-                      ? "bg-amber-500 text-slate-950 font-black shadow-md scale-105"
-                      : "bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white"
+                      ? "bg-amber-500 text-slate-950 font-black shadow-sm scale-105"
+                      : "bg-white text-slate-600 hover:bg-slate-200 border border-slate-200"
                   }`}
                   title={`Set character size to ${sz}`}
                 >
@@ -153,9 +153,9 @@ export default function Home() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin"
-            className="px-4 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black rounded-xl shadow-lg shadow-blue-600/40 transition-all flex items-center gap-1.5 border border-blue-400/30"
+            className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl shadow-md transition-all flex items-center gap-1.5"
           >
-            <span>💼 Ad Revenue &amp; CMS Studio Page</span>
+            <span>💼 Ad Revenue &amp; CMS Studio</span>
             <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-black">NEW PAGE ↗</span>
           </Link>
         </div>

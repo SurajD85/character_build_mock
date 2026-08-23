@@ -38,7 +38,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
         id: "item_hero_1",
         title: "2024 Quantum Edge 3 Stretto Power Chair with iLevel",
         price: "$8,950",
-        imageBg: "from-blue-600 via-indigo-600 to-slate-800",
+        imageBg: "from-blue-600 to-indigo-700",
         category: "Power Wheelchairs",
         badge: "NDIS Registered Provider",
         description: "Flagship motorized power wheelchair featuring 12-inch seat elevation at 3.5 mph walking speed, smooth suspension, and LED lighting package.",
@@ -48,7 +48,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
         id: "item_hero_2",
         title: "Toyota HiAce Welcab Automated Rear-Lift Accessible Van",
         price: "$49,800",
-        imageBg: "from-sky-500 via-blue-600 to-indigo-800",
+        imageBg: "from-sky-500 to-blue-700",
         category: "Accessible Vans",
         badge: "Low Mileage",
         description: "Certified accessible van with remote-controlled heavy-duty wheelchair lift, Q'Straint automatic tie-downs, and passenger swivel seat.",
@@ -58,7 +58,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
         id: "item_hero_3",
         title: "Pride Mobility Apex Rapid 4-Wheel Comfort Scooter",
         price: "$2,290",
-        imageBg: "from-emerald-500 via-teal-600 to-slate-800",
+        imageBg: "from-emerald-500 to-teal-700",
         category: "Mobility Scooters",
         badge: "Bestseller",
         description: "Ultra-smooth CTS front and rear suspension scooter. Disassembles easily with one hand for quick trunk transport.",
@@ -68,7 +68,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
         id: "item_hero_4",
         title: "Carbon Ultralight Active Rollator Walker",
         price: "$690",
-        imageBg: "from-amber-500 via-orange-600 to-slate-800",
+        imageBg: "from-amber-500 to-orange-700",
         category: "Daily Living Aids",
         badge: "Carbon Fibre",
         description: "The world's lightest 4-wheel rollator walker at only 4.8 kg. Shock-absorbing carbon frame and soft EVA wheels.",
@@ -78,7 +78,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
         id: "item_hero_5",
         title: "Bionic Kinetic Grip Myoelectric Prosthetic Hand",
         price: "$14,500",
-        imageBg: "from-indigo-600 via-purple-600 to-slate-800",
+        imageBg: "from-indigo-600 to-purple-700",
         category: "Prosthetics & Robotics",
         badge: "High-Tech Innovation",
         description: "Multi-articulating myoelectric prosthetic hand with 14 customizable grip patterns and Bluetooth app calibration.",
@@ -88,7 +88,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
         id: "item_hero_6",
         title: "Sensory Calm & Focus Ergonomic Noise Reduction Headset",
         price: "$340",
-        imageBg: "from-purple-600 via-violet-700 to-slate-900",
+        imageBg: "from-purple-500 to-violet-700",
         category: "Sensory & Neurodiversity",
         badge: "Sensory Friendly",
         description: "Engineered specifically for sensory sensitivity, filtering out harsh frequencies while allowing natural conversation clarity.",
@@ -133,32 +133,32 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-32 relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-32 relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
       
-      {/* --- TOP BRAND HEADER BAR --- */}
-      <header className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 shadow-lg">
+      {/* --- TOP BRAND HEADER BAR (LIGHT THEME) --- */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border border-slate-700 shadow-sm"
+              className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border border-slate-200 shadow-sm"
             >
               <span>←</span>
               <span>Back to Marketplace</span>
             </Link>
-            <div className="h-5 w-px bg-slate-800 hidden sm:block"></div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <Link href="/" className="hover:text-blue-400 transition-colors">Home</Link>
+            <div className="h-5 w-px bg-slate-200 hidden sm:block"></div>
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
               <span>/</span>
               <span>Verified Sellers</span>
               <span>/</span>
-              <span className="text-white font-bold">{advertiser.name}</span>
+              <span className="text-slate-900 font-bold">{advertiser.name}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-bold border border-emerald-500/20">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Showroom Open Now
             </span>
             <button
@@ -166,7 +166,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
                 const el = document.getElementById("inquiry-section");
                 el?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-extrabold text-xs shadow-lg shadow-blue-600/30 transition-all flex items-center gap-1.5"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-extrabold text-xs shadow-lg shadow-blue-600/25 transition-all flex items-center gap-1.5"
             >
               <span>💬 Book Home Demo / Trial</span>
             </button>
@@ -174,18 +174,14 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
         </div>
       </header>
 
-      {/* --- SELLER STOREFRONT HERO BANNER --- */}
-      <section className="relative bg-gradient-to-b from-blue-950 via-slate-900 to-slate-950 border-b border-slate-800 pt-12 pb-16 px-6 overflow-hidden">
-        {/* Glow ambient backgrounds */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
-
+      {/* --- SELLER STOREFRONT HERO BANNER (CLEAN LIGHT/BLUE GRADIENT) --- */}
+      <section className="relative bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-white border-b border-slate-200 pt-12 pb-16 px-6 overflow-hidden shadow-md">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
             
             {/* Seller Identity & Verified Badges */}
             <div className="flex items-start gap-5">
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-3xl font-black shadow-2xl shadow-blue-500/30 border-2 border-white/20 flex-shrink-0">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-white text-blue-800 flex items-center justify-center text-3xl font-black shadow-2xl border-4 border-white/20 flex-shrink-0">
                 {advertiser.name.charAt(0)}
               </div>
               <div className="space-y-2">
@@ -193,24 +189,24 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
                   <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
                     {advertiser.name}
                   </h1>
-                  <span className="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-400/30 rounded-full text-xs font-black flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 bg-white/20 backdrop-blur-md text-white border border-white/30 rounded-full text-xs font-black flex items-center gap-1">
                     <span>✓</span> Verified Retailer
                   </span>
-                  <span className="px-2.5 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-400/30 rounded-full text-xs font-black flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 bg-amber-400 text-slate-950 font-black rounded-full text-xs flex items-center gap-1 shadow-sm">
                     <span>★</span> NDIS Registered
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 max-w-xl leading-relaxed">
+                <p className="text-xs text-blue-100 max-w-xl leading-relaxed">
                   Official certified accessibility partner on AbilityClassifieds. Specializing in high-performance power wheelchairs, custom ramp vans, pediatric mobility solutions, and nationwide home trial service.
                 </p>
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 pt-1 font-semibold">
-                  <span className="flex items-center gap-1 text-amber-400">
-                    ★ {advertiser.rating} <span className="text-slate-500">(148 Verified Customer Reviews)</span>
+                <div className="flex flex-wrap items-center gap-4 text-xs text-blue-200 pt-1 font-semibold">
+                  <span className="flex items-center gap-1 text-amber-300 font-bold">
+                    ★ {advertiser.rating} <span className="text-blue-200 font-normal">(148 Verified Customer Reviews)</span>
                   </span>
                   <span>•</span>
-                  <span className="text-slate-400">📍 Sydney, Melbourne & Brisbane Showrooms</span>
+                  <span>📍 Sydney, Melbourne &amp; Brisbane Showrooms</span>
                   <span>•</span>
-                  <span className="text-emerald-400 font-bold">⚡ Fast &lt; 15 min response time</span>
+                  <span className="text-emerald-300 font-bold">⚡ Fast &lt; 15 min response time</span>
                 </div>
               </div>
             </div>
@@ -219,7 +215,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
             <div className="flex flex-wrap md:flex-col gap-2.5 w-full md:w-auto">
               <a
                 href={`mailto:${advertiser.contactEmail}`}
-                className="flex-1 md:flex-none px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold text-center border border-slate-700 transition-all flex items-center justify-center gap-2"
+                className="flex-1 md:flex-none px-5 py-2.5 bg-white/15 hover:bg-white/25 text-white rounded-xl text-xs font-bold text-center border border-white/20 backdrop-blur-md transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <span>✉️ Email Seller</span>
               </a>
@@ -227,7 +223,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
                 href={advertiser.websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 md:flex-none px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black text-center shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2"
+                className="flex-1 md:flex-none px-5 py-2.5 bg-white hover:bg-blue-50 text-blue-900 rounded-xl text-xs font-black text-center shadow-lg transition-all flex items-center justify-center gap-2"
               >
                 <span>🌐 Official Website ↗</span>
               </a>
@@ -236,38 +232,38 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
           </div>
 
           {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-800/80">
-            <div className="bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Active Classifieds</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-6 border-t border-white/15">
+            <div className="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15">
+              <div className="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Active Classifieds</div>
               <div className="text-xl font-black text-white mt-0.5">{advertiser.itemsForSale.length} Listed Items</div>
             </div>
-            <div className="bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">NDIS Compliance</div>
-              <div className="text-xl font-black text-emerald-400 mt-0.5">100% Registered</div>
+            <div className="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15">
+              <div className="text-[11px] font-bold text-blue-200 uppercase tracking-wider">NDIS Compliance</div>
+              <div className="text-xl font-black text-emerald-300 mt-0.5">100% Registered</div>
             </div>
-            <div className="bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Warranty Included</div>
-              <div className="text-xl font-black text-blue-400 mt-0.5">2 - 3 Years Factory</div>
+            <div className="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15">
+              <div className="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Warranty Included</div>
+              <div className="text-xl font-black text-white mt-0.5">2 - 3 Years Factory</div>
             </div>
-            <div className="bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Home Trials</div>
-              <div className="text-xl font-black text-purple-400 mt-0.5">Available On Demand</div>
+            <div className="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15">
+              <div className="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Home Trials</div>
+              <div className="text-xl font-black text-amber-300 mt-0.5">Available On Demand</div>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* --- STORE INVENTORY SECTION --- */}
+      {/* --- STORE INVENTORY SECTION (CLEAN LIGHT THEME) --- */}
       <main className="max-w-7xl mx-auto px-6 py-10 space-y-8">
         
         {/* Category Filter Pills */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-white flex items-center gap-2">
-              <span>🛍️</span> Current Inventory & Showcase Ads from {advertiser.name}
+            <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <span>🛍️</span> Current Inventory &amp; Showcase Ads from {advertiser.name}
             </h2>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-slate-500 font-semibold">
               Showing {filteredItems.length} products
             </span>
           </div>
@@ -281,8 +277,8 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all border ${
                     isSelected
-                      ? "bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-600/30 scale-105"
-                      : "bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-white"
+                      ? "bg-blue-600 border-blue-600 text-white shadow-md scale-105"
+                      : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900 shadow-sm"
                   }`}
                 >
                   {cat === "all" ? "🌐 All Products" : cat}
@@ -297,16 +293,16 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="bg-slate-900/80 rounded-3xl border border-slate-800 p-5 space-y-4 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all flex flex-col justify-between group"
+              className="bg-white rounded-3xl border border-slate-200 p-5 space-y-4 hover:border-blue-300 hover:shadow-xl transition-all flex flex-col justify-between group shadow-sm"
             >
               <div className="space-y-3.5">
                 {/* Visual Banner */}
                 <div className={`h-48 rounded-2xl bg-gradient-to-tr ${item.imageBg} flex flex-col justify-between p-4 relative overflow-hidden group-hover:scale-[1.02] transition-transform`}>
                   <div className="flex items-center justify-between z-10">
-                    <span className="px-2.5 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-black text-white border border-white/20 uppercase tracking-wider">
+                    <span className="px-2.5 py-1 bg-black/50 backdrop-blur-md rounded-full text-[10px] font-black text-white border border-white/20 uppercase tracking-wider">
                       {item.category}
                     </span>
-                    <span className="px-2.5 py-1 bg-blue-500/80 backdrop-blur-md rounded-full text-[10px] font-black text-white border border-white/20">
+                    <span className="px-2.5 py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black text-blue-900 border border-white/40">
                       {item.badge}
                     </span>
                   </div>
@@ -314,25 +310,25 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
                     <div className="text-2xl font-black text-white drop-shadow-md">
                       {item.price}
                     </div>
-                    <span className="text-[11px] font-bold text-slate-200 drop-shadow">NDIS Eligible</span>
+                    <span className="text-[11px] font-bold text-white drop-shadow">NDIS Eligible</span>
                   </div>
                 </div>
 
                 {/* Content */}
                 <div>
-                  <h3 className="font-extrabold text-white text-base leading-snug group-hover:text-blue-400 transition-colors">
+                  <h3 className="font-extrabold text-slate-900 text-base leading-snug group-hover:text-blue-600 transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Specs Chips */}
-                <div className="space-y-1.5 pt-2 border-t border-slate-800">
+                <div className="space-y-1.5 pt-2 border-t border-slate-100">
                   {item.specs.map((spec: string, i: number) => (
-                    <div key={i} className="text-[11px] text-slate-300 flex items-center gap-1.5 font-medium">
-                      <span className="text-blue-400 text-xs">✓</span>
+                    <div key={i} className="text-[11px] text-slate-600 flex items-center gap-1.5 font-medium">
+                      <span className="text-blue-600 text-xs">✓</span>
                       <span>{spec}</span>
                     </div>
                   ))}
@@ -340,19 +336,19 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
               </div>
 
               {/* Actions */}
-              <div className="pt-4 border-t border-slate-800 flex items-center gap-2">
+              <div className="pt-4 border-t border-slate-100 flex items-center gap-2">
                 <button
                   onClick={() => setSelectedItemModal(item)}
                   className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black shadow-md transition-all text-center"
                 >
-                  View Full Specs & Quote
+                  View Full Specs &amp; Quote
                 </button>
                 <button
                   onClick={() => {
                     const el = document.getElementById("inquiry-section");
                     el?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="px-3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-bold transition-all"
+                  className="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all border border-slate-200"
                   title="Inquire about this item"
                 >
                   💬
@@ -362,31 +358,31 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
           ))}
         </div>
 
-        {/* --- INQUIRY & HOME DEMO TRIAL SECTION --- */}
-        <section id="inquiry-section" className="mt-16 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 p-8 rounded-3xl border border-blue-900/50 shadow-2xl relative overflow-hidden">
+        {/* --- INQUIRY & HOME DEMO TRIAL SECTION (LIGHT THEME) --- */}
+        <section id="inquiry-section" className="mt-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-white p-8 rounded-3xl border border-blue-200 shadow-lg relative overflow-hidden">
           <div className="max-w-3xl mx-auto space-y-6 relative z-10">
             <div className="text-center space-y-2">
-              <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-extrabold border border-blue-400/30">
-                Direct Seller Inquiry & Home Trial
+              <span className="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-extrabold shadow-sm">
+                Direct Seller Inquiry &amp; Home Trial
               </span>
-              <h2 className="text-2xl font-black text-white">
+              <h2 className="text-2xl font-black text-slate-900">
                 Book a Free Home Demonstration or Request NDIS Quote
               </h2>
-              <p className="text-xs text-slate-400">
-                Connect directly with {advertiser.name}'s assistive technology specialists. Free trial options available nationwide.
+              <p className="text-xs text-slate-500">
+                Connect directly with {advertiser.name}&apos;s assistive technology specialists. Free trial options available nationwide.
               </p>
             </div>
 
             {inquirySent ? (
-              <div className="p-6 bg-emerald-950/80 border border-emerald-500/50 rounded-2xl text-center space-y-2">
+              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
                 <div className="text-3xl">🎉</div>
-                <h3 className="text-lg font-black text-emerald-300">Inquiry Received Successfully!</h3>
-                <p className="text-xs text-emerald-200">
+                <h3 className="text-lg font-black text-emerald-800">Inquiry Received Successfully!</h3>
+                <p className="text-xs text-emerald-700">
                   A representative from <strong>{advertiser.name}</strong> will contact you within 15 minutes to confirm details.
                 </p>
                 <button
                   onClick={() => setInquirySent(false)}
-                  className="mt-3 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold"
+                  className="mt-3 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md"
                 >
                   Send Another Inquiry
                 </button>
@@ -394,63 +390,63 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
             ) : (
               <form onSubmit={handleInquirySubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1">Your Full Name *</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Your Full Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Sarah Jenkins"
                     value={inquiryForm.name}
                     onChange={(e) => setInquiryForm({ ...inquiryForm, name: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1">Email Address *</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Email Address *</label>
                   <input
                     type="email"
                     required
                     placeholder="sarah@example.com"
                     value={inquiryForm.email}
                     onChange={(e) => setInquiryForm({ ...inquiryForm, email: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1">Phone Number *</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     required
                     placeholder="+61 400 000 000"
                     value={inquiryForm.phone}
                     onChange={(e) => setInquiryForm({ ...inquiryForm, phone: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1">NDIS Participant Number (Optional)</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">NDIS Participant Number (Optional)</label>
                   <input
                     type="text"
                     placeholder="e.g. 430982341"
                     value={inquiryForm.ndisNumber}
                     onChange={(e) => setInquiryForm({ ...inquiryForm, ndisNumber: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-300 mb-1">Message / Items of Interest *</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Message / Items of Interest *</label>
                   <textarea
                     rows={3}
                     required
                     placeholder="I am interested in scheduling a home demonstration for the power wheelchair..."
                     value={inquiryForm.message}
                     onChange={(e) => setInquiryForm({ ...inquiryForm, message: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   ></textarea>
                 </div>
                 <div className="md:col-span-2 pt-2">
                   <button
                     type="submit"
-                    className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm rounded-xl shadow-xl shadow-blue-600/40 transition-all"
+                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm rounded-xl shadow-xl shadow-blue-600/30 transition-all"
                   >
                     Submit Booking Request to {advertiser.name} →
                   </button>
@@ -474,35 +470,35 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
 
       {/* --- QUICK ITEM DETAIL MODAL --- */}
       {selectedItemModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <span className="text-xs font-bold text-blue-400">{selectedItemModal.category}</span>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <span className="text-xs font-bold text-blue-600">{selectedItemModal.category}</span>
               <button
                 onClick={() => setSelectedItemModal(null)}
-                className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center"
               >
                 ✕
               </button>
             </div>
-            <h3 className="text-lg font-black text-white">{selectedItemModal.title}</h3>
-            <div className="text-2xl font-black text-emerald-400">{selectedItemModal.price}</div>
-            <p className="text-xs text-slate-300 leading-relaxed">{selectedItemModal.description}</p>
+            <h3 className="text-lg font-black text-slate-900">{selectedItemModal.title}</h3>
+            <div className="text-2xl font-black text-emerald-600">{selectedItemModal.price}</div>
+            <p className="text-xs text-slate-600 leading-relaxed">{selectedItemModal.description}</p>
             <div className="space-y-1.5 pt-2">
               {selectedItemModal.specs.map((s: string, i: number) => (
-                <div key={i} className="text-xs text-slate-300 flex items-center gap-1.5">
-                  <span className="text-emerald-400">✓</span> {s}
+                <div key={i} className="text-xs text-slate-600 flex items-center gap-1.5">
+                  <span className="text-emerald-600">✓</span> {s}
                 </div>
               ))}
             </div>
-            <div className="pt-4 border-t border-slate-800 flex gap-3">
+            <div className="pt-4 border-t border-slate-100 flex gap-3">
               <button
                 onClick={() => {
                   setSelectedItemModal(null);
                   const el = document.getElementById("inquiry-section");
                   el?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white font-extrabold rounded-xl text-xs"
+                className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white font-extrabold rounded-xl text-xs shadow-md"
               >
                 Inquire About This Product
               </button>
