@@ -506,7 +506,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
       // 2. Build one unified master continuous sequential timeline
       const masterTl = gsap.timeline({
         repeat: -1,
-        repeatDelay: 2.0,
+        repeatDelay: 3.5,
       });
       masterTlRef.current = masterTl;
 
@@ -522,7 +522,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
       ) => {
         lines.forEach((line, lineIdx) => {
           tl.to({}, {
-            duration: line.durationMs / 1000,
+            duration: Math.max(2.5, line.durationMs / 1000),
             onStart: () => {
               const prevLines = lines.slice(0, lineIdx + 1);
               const char1Text = [...prevLines].reverse().find((l) => l.speaker === 1)?.text;
@@ -567,8 +567,8 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
           const clip = findSceneClip(campaign.characterId, campaign.partnerCharacterId!, currentPage);
           const lines = clip?.lines || (campaign.dialogueScript
             ? [
-                { speaker: 1 as const, text: campaign.dialogueScript.char1Line, durationMs: 2200 },
-                { speaker: 2 as const, text: campaign.dialogueScript.char2Line, durationMs: 2200 },
+                { speaker: 1 as const, text: campaign.dialogueScript.char1Line, durationMs: 2500 },
+                { speaker: 2 as const, text: campaign.dialogueScript.char2Line, durationMs: 2500 },
               ]
             : []);
 
@@ -586,7 +586,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
               curviness: 1.3,
               autoRotate: false,
             },
-            duration: 6.5 / charSpeed,
+            duration: 11.0 / charSpeed,
             ease: EASE_SUSPENSION,
           });
           campTl.to(partnerEl, {
@@ -599,13 +599,13 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
               curviness: 1.3,
               autoRotate: false,
             },
-            duration: 6.5 / charSpeed,
+            duration: 11.0 / charSpeed,
             ease: EASE_SUSPENSION,
           }, "<");
 
           // Dialogue exchange at center
           addDialoguePhases(campTl, campaign.id, lines);
-          campTl.to({}, { duration: 1.6 });
+          campTl.to({}, { duration: 2.2 });
 
           // Smooth exit past right screen edge
           campTl.to(primaryEl, {
@@ -618,7 +618,7 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
               curviness: 1.2,
               autoRotate: false,
             },
-            duration: 5.5 / charSpeed,
+            duration: 9.0 / charSpeed,
             ease: "power1.in",
           });
           campTl.to(partnerEl, {
@@ -631,12 +631,12 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
               curviness: 1.2,
               autoRotate: false,
             },
-            duration: 5.5 / charSpeed,
+            duration: 9.0 / charSpeed,
             ease: "power1.in",
           }, "<");
 
           // Pleasant gap before next cruise
-          campTl.to({}, { duration: 2.0 });
+          campTl.to({}, { duration: 2.5 });
         }
         // ----------------------------------------------------
         // 2. CONVOY MODE
@@ -645,40 +645,40 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
           const clip = findSceneClip(campaign.characterId, campaign.partnerCharacterId!, currentPage);
           const lines = clip?.lines || (campaign.dialogueScript
             ? [
-                { speaker: 1 as const, text: campaign.dialogueScript.char1Line, durationMs: 2200 },
-                { speaker: 2 as const, text: campaign.dialogueScript.char2Line, durationMs: 2200 },
+                { speaker: 1 as const, text: campaign.dialogueScript.char1Line, durationMs: 2500 },
+                { speaker: 2 as const, text: campaign.dialogueScript.char2Line, durationMs: 2500 },
               ]
-            : [{ speaker: 1 as const, text: "United Mobility Convoy! 🚀", durationMs: 2000 }]);
+            : [{ speaker: 1 as const, text: "United Mobility Convoy! 🚀", durationMs: 2200 }]);
 
           campTl.set(primaryEl, { x: -650, y: 0, visibility: "visible", opacity: 1 });
           campTl.set(partnerEl, { x: -1000, y: 0, visibility: "visible", opacity: 1 });
 
           campTl.to(primaryEl, {
             x: w * 0.50,
-            duration: 6.5 / charSpeed,
+            duration: 11.0 / charSpeed,
             ease: EASE_SUSPENSION,
           });
           campTl.to(partnerEl, {
             x: w * 0.22,
-            duration: 6.5 / charSpeed,
+            duration: 11.0 / charSpeed,
             ease: EASE_SUSPENSION,
           }, "<");
 
           addDialoguePhases(campTl, campaign.id, lines);
-          campTl.to({}, { duration: 1.4 });
+          campTl.to({}, { duration: 2.0 });
 
           campTl.to(primaryEl, {
             x: w + 650,
-            duration: 6.0 / charSpeed,
+            duration: 9.5 / charSpeed,
             ease: "power1.in",
           });
           campTl.to(partnerEl, {
             x: w + 350,
-            duration: 6.0 / charSpeed,
+            duration: 9.5 / charSpeed,
             ease: "power1.in",
           }, "<");
 
-          campTl.to({}, { duration: 2.0 });
+          campTl.to({}, { duration: 2.5 });
         }
         // ----------------------------------------------------
         // 3. RACE OVERTAKE MODE
@@ -686,8 +686,8 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
         else if (campaign.campaignMode === "RACE_OVERTAKE" && partnerEl) {
           const clip = findSceneClip(campaign.characterId, campaign.partnerCharacterId!, currentPage);
           const lines = clip?.lines || [
-            { speaker: 1 as const, text: "Passing on the left! ⚡", durationMs: 2000 },
-            { speaker: 2 as const, text: "Go go go! 💨", durationMs: 2000 },
+            { speaker: 1 as const, text: "Passing on the left! ⚡", durationMs: 2200 },
+            { speaker: 2 as const, text: "Go go go! 💨", durationMs: 2200 },
           ];
 
           campTl.set(partnerEl, { x: -500, y: -22, visibility: "visible", opacity: 1 });
@@ -695,42 +695,42 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
 
           campTl.to(partnerEl, {
             x: w * 0.45,
-            duration: 5.5 / charSpeed,
+            duration: 9.5 / charSpeed,
             ease: EASE_SUSPENSION,
           });
           campTl.to(primaryEl, {
             x: w * 0.20,
-            duration: 5.5 / charSpeed,
+            duration: 9.5 / charSpeed,
             ease: EASE_SUSPENSION,
           }, "<");
 
           campTl.to(primaryEl, {
             x: w * 0.68,
             y: -10,
-            duration: 2.8,
+            duration: 4.5,
             ease: EASE_TURBO_BOOST,
           });
           campTl.to(partnerEl, {
             x: w * 0.55,
-            duration: 3.2,
+            duration: 5.0,
             ease: "none",
           }, "<");
 
           addDialoguePhases(campTl, campaign.id, lines);
-          campTl.to({}, { duration: 1.0 });
+          campTl.to({}, { duration: 1.5 });
 
           campTl.to(primaryEl, {
             x: w + 700,
-            duration: 4.5 / charSpeed,
+            duration: 7.5 / charSpeed,
             ease: "power1.in",
           });
           campTl.to(partnerEl, {
             x: w + 450,
-            duration: 5.5 / charSpeed,
+            duration: 8.5 / charSpeed,
             ease: "power1.in",
           }, "<");
 
-          campTl.to({}, { duration: 2.0 });
+          campTl.to({}, { duration: 2.5 });
         }
         // ----------------------------------------------------
         // 4. SOLO MODE (with Edge Resting Spot - Clean mascot only)
@@ -738,17 +738,17 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
         else {
           campTl.set(primaryEl, { x: -650, y: 0, visibility: "visible", opacity: 1 });
 
-          // Phase A: Glide smoothly across page towards the right edge parking zone
+          // Phase A: Glide smoothly across page towards the right edge parking zone (calm, steady pace)
           const parkX = Math.max(w * 0.55, w - 240);
           campTl.to(primaryEl, {
             x: parkX,
-            duration: 8.0 / charSpeed,
+            duration: 14.5 / charSpeed,
             ease: EASE_SUSPENSION,
           });
 
           // Phase B: Clean resting spot at right edge (no banner, no cards, clean mascot only)
           campTl.to({}, {
-            duration: 4.0,
+            duration: 5.0,
             onStart: () => {
               setParkedCampaignId(campaign.id);
               clearDialogue(campaign.id);
@@ -762,21 +762,21 @@ export const CruisingAdEngine: React.FC<CruisingAdEngineProps> = ({
           // Phase C: Resume and smoothly exit off right screen edge
           campTl.to(primaryEl, {
             x: w + 650,
-            duration: 3.8 / charSpeed,
+            duration: 6.5 / charSpeed,
             ease: "power1.in",
           });
 
           if (innerPrimaryEl) {
             gsap.to(innerPrimaryEl, {
               y: -6,
-              duration: 1.4,
+              duration: 1.6,
               repeat: -1,
               yoyo: true,
               ease: "sine.inOut",
             });
           }
 
-          campTl.to({}, { duration: 2.0 });
+          campTl.to({}, { duration: 3.0 });
         }
 
         masterTl.add(campTl);
