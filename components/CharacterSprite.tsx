@@ -40,55 +40,67 @@ export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
 
     if (accessory === "cape") {
       return (
-        <g className="animate-pulse">
-          <path d="M 45 42 Q 10 55 5 95 Q 25 90 40 85 Z" fill="#dc2626" opacity="0.9" />
-        </g>
+        <div className="absolute top-2 left-6 z-30 pointer-events-none animate-pulse">
+          <svg viewBox="0 0 60 70" className="w-12 h-14 drop-shadow-lg overflow-visible">
+            <path d="M 30 15 Q 8 25 0 60 Q 20 52 35 48 Z" fill="#dc2626" opacity="0.95" />
+            <path d="M 30 15 Q 12 28 5 58" stroke="#f87171" strokeWidth="1.5" fill="none" opacity="0.7" />
+          </svg>
+        </div>
       );
     }
 
     if (accessory === "party_hat") {
       return (
-        <g transform="translate(68, 2)">
-          <polygon points="10,22 0,0 20,0" fill="#ec4899" />
-          <polygon points="10,22 5,0 15,0" fill="#f43f5e" />
-          <circle cx="10" cy="24" r="3.5" fill="#fde047" className="animate-ping" />
-          <line x1="4" y1="7" x2="16" y2="7" stroke="#fde047" strokeWidth="2" />
-          <line x1="7" y1="14" x2="13" y2="14" stroke="#38bdf8" strokeWidth="2" />
-        </g>
+        <div className="absolute -top-6 left-12 z-30 pointer-events-none">
+          <svg viewBox="0 0 40 40" className="w-8 h-8 drop-shadow-md overflow-visible">
+            <polygon points="20,4 6,34 34,34" fill="#ec4899" />
+            <polygon points="20,4 12,34 28,34" fill="#f43f5e" />
+            <circle cx="20" cy="4" r="4" fill="#fde047" className="animate-ping" />
+            <circle cx="20" cy="4" r="3" fill="#facc15" />
+            <line x1="10" y1="18" x2="30" y2="18" stroke="#fde047" strokeWidth="2.5" />
+            <line x1="14" y1="26" x2="26" y2="26" stroke="#38bdf8" strokeWidth="2.5" />
+          </svg>
+        </div>
       );
     }
 
     if (accessory === "sunglasses") {
       return (
-        <g transform="translate(65, 26)">
-          <rect x="0" y="0" width="11" height="7" rx="2" fill="#0f172a" stroke="#fbbf24" strokeWidth="1" />
-          <rect x="13" y="0" width="11" height="7" rx="2" fill="#0f172a" stroke="#fbbf24" strokeWidth="1" />
-          <line x1="11" y1="3" x2="13" y2="3" stroke="#fbbf24" strokeWidth="2" />
-          <line x1="2" y1="2" x2="5" y2="5" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
-          <line x1="15" y1="2" x2="18" y2="5" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
-        </g>
+        <div className="absolute top-4 left-12 z-30 pointer-events-none">
+          <svg viewBox="0 0 50 24" className="w-10 h-5 drop-shadow-md overflow-visible">
+            <rect x="2" y="2" width="18" height="13" rx="4" fill="#0f172a" stroke="#fbbf24" strokeWidth="2" />
+            <rect x="24" y="2" width="18" height="13" rx="4" fill="#0f172a" stroke="#fbbf24" strokeWidth="2" />
+            <line x1="20" y1="7" x2="24" y2="7" stroke="#fbbf24" strokeWidth="3" />
+            <line x1="5" y1="5" x2="11" y2="11" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity="0.9" />
+            <line x1="27" y1="5" x2="33" y2="11" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity="0.9" />
+          </svg>
+        </div>
       );
     }
 
     if (accessory === "crown") {
       return (
-        <g transform="translate(64, 4)" className="drop-shadow-md">
-          <path d="M 0 16 L 3 0 L 10 10 L 17 0 L 20 16 Z" fill="#eab308" stroke="#ca8a04" strokeWidth="1" />
-          <rect x="0" y="14" width="20" height="4" rx="1" fill="#ca8a04" />
-          <circle cx="3" cy="2" r="1.5" fill="#ef4444" />
-          <circle cx="10" cy="10" r="1.5" fill="#3b82f6" />
-          <circle cx="17" cy="2" r="1.5" fill="#ef4444" />
-        </g>
+        <div className="absolute -top-4 left-10 z-30 pointer-events-none drop-shadow-lg">
+          <svg viewBox="0 0 50 30" className="w-10 h-6 overflow-visible">
+            <path d="M 4 24 L 9 4 L 20 15 L 31 4 L 36 24 Z" fill="#facc15" stroke="#ca8a04" strokeWidth="1.5" />
+            <rect x="4" y="22" width="32" height="6" rx="2" fill="#ca8a04" />
+            <circle cx="9" cy="5" r="2.5" fill="#ef4444" />
+            <circle cx="20" cy="15" r="2.5" fill="#3b82f6" />
+            <circle cx="31" cy="5" r="2.5" fill="#ef4444" />
+          </svg>
+        </div>
       );
     }
 
     if (accessory === "gold_medal") {
       return (
-        <g transform="translate(68, 48)">
-          <path d="M 0 0 L 8 16 L 16 0" stroke="#2563eb" strokeWidth="3" fill="none" />
-          <circle cx="8" cy="18" r="7" fill="#eab308" stroke="#ca8a04" strokeWidth="1.5" />
-          <text x="8" y="21" fontSize="7" textAnchor="middle" fill="#78350f" fontWeight="900" fontFamily="sans-serif">1</text>
-        </g>
+        <div className="absolute top-8 left-12 z-30 pointer-events-none">
+          <svg viewBox="0 0 40 45" className="w-8 h-9 drop-shadow-md overflow-visible">
+            <path d="M 8 0 L 20 22 L 32 0" stroke="#2563eb" strokeWidth="4" fill="none" strokeLinecap="round" />
+            <circle cx="20" cy="26" r="10" fill="#facc15" stroke="#ca8a04" strokeWidth="2" />
+            <text x="20" y="30" fontSize="10" textAnchor="middle" fill="#78350f" fontWeight="900" fontFamily="sans-serif">1</text>
+          </svg>
+        </div>
       );
     }
 
@@ -97,33 +109,39 @@ export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
 
   // Render customizable trailing flag / banner depending on shape
   const renderFlagBanner = (icon: string) => {
-    let clipPathStyle = "polygon(0% 0%, 92% 0%, 100% 50%, 92% 100%, 0% 100%)";
-    let shapePadding = "pr-7";
+    let clipPathStyle: string | undefined = "polygon(0% 0%, 100% 0%, 82% 50%, 100% 100%, 0% 100%)";
+    let shapePadding = "pr-8";
+    let badgeBorderClass = "border-y border-l border-white/40 shadow-xl";
 
     if (flagShape === "ribbon") {
-      clipPathStyle = "polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%)";
-      shapePadding = "pr-6";
-    } else if (flagShape === "pennant") {
-      clipPathStyle = "polygon(0% 0%, 100% 15%, 88% 50%, 100% 85%, 0% 100%)";
+      clipPathStyle = "polygon(0% 10%, 94% 0%, 100% 50%, 94% 100%, 0% 90%)";
       shapePadding = "pr-8";
+      badgeBorderClass = "border-y border-l border-amber-300/60 shadow-2xl";
+    } else if (flagShape === "pennant") {
+      clipPathStyle = "polygon(0% 20%, 100% 0%, 100% 100%, 0% 80%)";
+      shapePadding = "pr-7";
+      badgeBorderClass = "border-y border-l border-sky-300/60 shadow-xl";
     } else if (flagShape === "box") {
-      clipPathStyle = "none";
-      shapePadding = "pr-4 rounded-r-2xl";
+      clipPathStyle = undefined;
+      shapePadding = "pr-5 rounded-2xl";
+      badgeBorderClass = "border-2 border-white/60 shadow-2xl rounded-2xl";
     }
 
     return (
-      <div className="relative flex items-center -mr-3 z-10 transition-all duration-300 group-hover:scale-105">
+      <div className="relative flex items-center -mr-2 z-10 transition-all duration-300 group-hover:scale-105">
         <div
-          className={`relative py-2.5 px-4 rounded-l-2xl shadow-xl text-white font-extrabold text-xs tracking-wide whitespace-nowrap flex items-center gap-2 border-y border-l border-white/30 transition-all ${shapePadding}`}
+          className={`relative py-2.5 px-4 text-white font-black text-xs tracking-wide whitespace-nowrap flex items-center gap-2 transition-all ${shapePadding} ${badgeBorderClass}`}
           style={{
-            background: `linear-gradient(135deg, ${themeColor}, #1e3a8a)`,
-            clipPath: flagShape === "box" ? undefined : clipPathStyle,
+            background: flagShape === "ribbon"
+              ? `linear-gradient(135deg, ${themeColor}, #4338ca, #d97706)`
+              : `linear-gradient(135deg, ${themeColor}, #1e3a8a)`,
+            clipPath: clipPathStyle,
           }}
         >
           <span className="text-sm">{icon}</span>
-          <span className="drop-shadow-sm">{ctaText}</span>
+          <span className="drop-shadow-md font-extrabold">{ctaText}</span>
         </div>
-        <div className="w-6 h-1 bg-slate-400 rounded-full -ml-1"></div>
+        <div className="w-5 h-1.5 bg-slate-400 rounded-full -ml-1 shadow-sm"></div>
       </div>
     );
   };
@@ -137,6 +155,8 @@ export const CharacterSprite: React.FC<CharacterSpriteProps> = ({
 
   return (
     <div className={`relative w-full h-full flex items-center justify-start pointer-events-auto cursor-pointer group select-none transition-transform duration-300 ${sizeTransformClass}`}>
+      {/* --- OUTFIT ACCESSORY OVERLAY (CAPES, CROWNS, SHADES, HATS, MEDALS) --- */}
+      {renderAccessoryOverlay()}
       
       {/* --- SPEECH BUBBLE OVERHEAD --- */}
       {bubbleText && (

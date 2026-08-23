@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { AdCampaign, CharacterAsset, CharacterId, CampaignMode, PageSlug, CharacterSize, FlagShape } from "../../types/campaign";
+import { AdCampaign, CharacterAsset, CharacterId, CampaignMode, PageSlug, CharacterSize, FlagShape, CharacterAccessory } from "../../types/campaign";
 import { INITIAL_CAMPAIGNS, MOCK_CHARACTERS, MOCK_ADVERTISERS } from "../../lib/mockData";
 import { CharacterLibrary } from "../../components/CharacterLibrary";
 import { CharacterSprite } from "../../components/CharacterSprite";
@@ -22,10 +22,23 @@ export default function AdminCmsPage() {
   const [activeTab, setActiveTab] = useState<"list" | "edit">("list");
   const [editingCampaign, setEditingCampaign] = useState<Partial<AdCampaign> | null>(null);
 
+  // Interactive Stage Simulation State
+  const [isSimulating, setIsSimulating] = useState(true);
+  const [simulationDialogueStep, setSimulationDialogueStep] = useState(0);
+
   const activeCount = campaigns.filter(c => c.status === "ACTIVE").length;
   const multiCharCount = campaigns.filter(c => c.status === "ACTIVE" && c.campaignMode !== "SOLO").length;
   const totalClicks = campaigns.reduce((acc, c) => acc + c.clicks, 0);
   const estRevenue = activeCount * 850;
+
+  // Dialogue simulation timer
+  useEffect(() => {
+    if (!isSimulating || editingCampaign?.campaignMode === "SOLO") return;
+    const interval = setInterval(() => {
+      setSimulationDialogueStep((prev) => (prev + 1) % 3);
+    }, 2400);
+    return () => clearInterval(interval);
+  }, [isSimulating, editingCampaign?.campaignMode]);
 
   const handleStartNew = () => {
     const defaultChar = MOCK_CHARACTERS[0];
@@ -36,6 +49,15 @@ export default function AdminCmsPage() {
       characterId: defaultChar.id,
       characterSize: "large",
       campaignMode: "SOLO",
+      flagShape: "swallowtail",
+      accessory: "none",
+      partnerCharacterId: "accessible_van",
+      partnerAdvertiserName: "Freedom Mobility & Chairs",
+      dialogueScript: {
+        char1Line: "Need an accessible wheelchair van?",
+        char2Line: "Yes! 20+ models in stock!"
+      },
+      mergedBannerText: "Click for Co-Op Van & Wheelchair Packages",
       ctaText: "Suraj Mobility Solutions — Explore All Ads",
       bubbleText: "Suraj Mobility Solutions",
       targetUrl: "https://example.com/surajmobility",
@@ -52,7 +74,12 @@ export default function AdminCmsPage() {
   };
 
   const handleEdit = (camp: AdCampaign) => {
-    setEditingCampaign({ ...camp });
+    setEditingCampaign({
+      flagShape: "swallowtail",
+      accessory: "none",
+      characterSize: "large",
+      ...camp,
+    });
     setActiveTab("edit");
   };
 
@@ -106,7 +133,7 @@ export default function AdminCmsPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-32 relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
       
       {/* --- TOP STICKY CMS HEADER (CLEAN LIGHT THEME) --- */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link
@@ -237,6 +264,11 @@ export default function AdminCmsPage() {
                             {camp.characterSize === "small" ? "COMPACT (SM)" : camp.characterSize === "medium" ? "STANDARD (MD)" : "HERO (LG)"}
                           </span>
 
+                          {/* Flag Shape Badge */}
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 capitalize">
+                            🚩 {camp.flagShape || "Swallowtail"}
+                          </span>
+
                           {/* Destination Badge */}
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
                             {camp.clickBehavior === "PAGE" ? "STOREFRONT" : camp.clickBehavior || "PAGE"}
@@ -295,287 +327,464 @@ export default function AdminCmsPage() {
         ) : (
 
           /* ============================================================ */
-          /* --- CAMPAIGN BUILDER & EDITOR FORM --- */
+          /* --- 2-COLUMN SPLIT STUDIO: CONTROLS (LEFT) + STICKY SIMULATOR (RIGHT) --- */
           /* ============================================================ */
-          <form onSubmit={handleSubmitForm} className="bg-white rounded-3xl border border-slate-200 p-8 space-y-8 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <div className="border-b border-slate-100 pb-5 flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-black text-slate-900">Campaign Choreography Studio</h2>
-                <p className="text-xs text-slate-500">Design dynamic animated ads, multi-character encounters, and sizing tiers.</p>
+            {/* ============================================================ */}
+            {/* --- LEFT COLUMN (7 COLS): CONFIGURATION CONTROLS --- */}
+            {/* ============================================================ */}
+            <form onSubmit={handleSubmitForm} className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-7 space-y-8 shadow-sm">
+              
+              <div className="border-b border-slate-100 pb-4 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Campaign Choreography Studio</h2>
+                  <p className="text-xs text-slate-500">Customize motion parameters, vector flag geometries, and size tiers.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("list")}
+                  className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200"
+                >
+                  ← Back to List
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setActiveTab("list")}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200"
-              >
-                ← Back to Campaigns
-              </button>
-            </div>
 
-            {/* 1. Choreography Encounter Mode */}
-            <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                1. Campaign Encounter Mode *
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                {[
-                  { id: "SOLO", icon: "👤", title: "Solo Cruiser", desc: "Single character cruising smoothly across the viewport." },
-                  { id: "CO_OP", icon: "💬", title: "Co-Op Dialogue", desc: "Two partner characters cruise together and exchange speech bubbles." },
-                  { id: "CONVOY", icon: "🚚", title: "Hero Convoy", desc: "Train of 2-3 characters cruising in synchronized formation." },
-                  { id: "RACE_OVERTAKE", icon: "⚡", title: "Race Overtake", desc: "Fast vehicle overtakes standard cruiser midway on screen." }
-                ].map((mode) => {
-                  const isSel = (editingCampaign?.campaignMode || "SOLO") === mode.id;
-                  return (
-                    <button
-                      key={mode.id}
-                      type="button"
-                      onClick={() => setEditingCampaign({ ...editingCampaign, campaignMode: mode.id as CampaignMode })}
-                      className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                        isSel
-                          ? "border-blue-600 bg-blue-50/60 text-blue-950 font-bold shadow-md ring-2 ring-blue-500/20"
-                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
-                      }`}
-                    >
-                      <div className="text-2xl mb-1">{mode.icon}</div>
-                      <div className="text-xs font-extrabold text-slate-900">{mode.title}</div>
-                      <div className="text-[11px] text-slate-500 mt-1 leading-relaxed">{mode.desc}</div>
-                    </button>
-                  );
-                })}
+              {/* 1. Choreography Encounter Mode */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <span>1.</span> Campaign Encounter Mode *
+                  </label>
+                  <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
+                    Live Stage Updates Instantly
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  {[
+                    { id: "SOLO", icon: "👤", title: "Solo Cruiser", desc: "Single character gliding smoothly across the viewport." },
+                    { id: "CO_OP", icon: "💬", title: "Co-Op Dialogue", desc: "Two characters cruise in tandem and exchange speech bubbles." },
+                    { id: "CONVOY", icon: "🚚", title: "Hero Convoy", desc: "Formation of 2 characters with connected banners." },
+                    { id: "RACE_OVERTAKE", icon: "⚡", title: "Race Overtake", desc: "Fast cruiser overtakes partner midway across the screen." }
+                  ].map((mode) => {
+                    const isSel = (editingCampaign?.campaignMode || "SOLO") === mode.id;
+                    return (
+                      <button
+                        key={mode.id}
+                        type="button"
+                        onClick={() => setEditingCampaign({ ...editingCampaign, campaignMode: mode.id as CampaignMode })}
+                        className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
+                          isSel
+                            ? "border-blue-600 bg-blue-50/70 text-blue-950 font-bold shadow-sm ring-2 ring-blue-500/20"
+                            : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-lg">{mode.icon}</span>
+                          <span className="text-xs font-extrabold text-slate-900">{mode.title}</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 leading-snug">{mode.desc}</div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
 
-            {/* 1B. Flag Shape & Geometry */}
-            <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                1B. Flag Shape &amp; Geometry *
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {[
-                  { shape: "swallowtail", title: "Swallowtail Flag 🚩", desc: "Deep V-cut tail" },
-                  { shape: "ribbon", title: "Wavy Ribbon 🎗️", desc: "Smooth wave tails" },
-                  { shape: "pennant", title: "Triangular Pennant 📐", desc: "Tapered point" },
-                  { shape: "box", title: "Badge Box 🏷️", desc: "Solid rectangle" },
-                ].map((f) => {
-                  const isSel = (editingCampaign?.flagShape || "swallowtail") === f.shape;
-                  return (
-                    <button
-                      key={f.shape}
-                      type="button"
-                      onClick={() => setEditingCampaign({ ...editingCampaign, flagShape: f.shape as FlagShape })}
-                      className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
-                        isSel
-                          ? "border-blue-600 bg-blue-50/60 text-blue-950 font-bold shadow-sm"
-                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
-                      }`}
-                    >
-                      <div className="text-xs font-extrabold text-slate-900">{f.title}</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">{f.desc}</div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 1C. Character Sizing Tier */}
-            <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                1C. Character Sizing &amp; Sponsor Tier *
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {[
-                  { size: "large", title: "🌟 Large (Hero / Premium)", badge: "100% Scale", desc: "Full scale (~200px) — Flagship sponsor with maximum visual authority & click impact." },
-                  { size: "medium", title: "✨ Medium (Standard)", badge: "80% Scale", desc: "Balanced scale (~150px) — Standard category sponsorship with crisp typography." },
-                  { size: "small", title: "🔍 Small (Compact)", badge: "62% Scale", desc: "Compact scale (~115px) — Subtle peripheral placement; non-intrusive mobile browsing." },
-                ].map((s) => {
-                  const isSel = (editingCampaign?.characterSize || "large") === s.size;
-                  return (
-                    <button
-                      key={s.size}
-                      type="button"
-                      onClick={() => setEditingCampaign({ ...editingCampaign, characterSize: s.size as CharacterSize })}
-                      className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                        isSel
-                          ? "border-amber-500 bg-amber-50/60 text-amber-950 font-bold shadow-md"
-                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
-                      }`}
-                    >
-                      <div className="text-xs font-extrabold text-slate-900 flex items-center justify-between">
-                        <span>{s.title}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">{s.badge}</span>
-                      </div>
-                      <div className="text-[11px] text-slate-500 mt-1.5 leading-relaxed">{s.desc}</div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 2. Advertiser Name & CTA */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1.5">
-                  2. Primary Advertiser Name *
+              {/* 1B. Flag Shape & Geometry (Real-time SVG Shapes) */}
+              <div className="space-y-2.5">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>1B.</span> Flag Shape &amp; Vector Geometry *
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={editingCampaign?.advertiserName || ""}
-                  onChange={(e) => setEditingCampaign({ ...editingCampaign, advertiserName: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                  {[
+                    { shape: "swallowtail", icon: "🚩", title: "Swallowtail", desc: "Deep V-cut tail" },
+                    { shape: "ribbon", icon: "🎗️", title: "Wavy Ribbon", desc: "Gold wave border" },
+                    { shape: "pennant", icon: "📐", title: "Pennant", desc: "Tapered point" },
+                    { shape: "box", icon: "🏷️", title: "Badge Box", desc: "Rounded pill" },
+                  ].map((f) => {
+                    const isSel = (editingCampaign?.flagShape || "swallowtail") === f.shape;
+                    return (
+                      <button
+                        key={f.shape}
+                        type="button"
+                        onClick={() => setEditingCampaign({ ...editingCampaign, flagShape: f.shape as FlagShape })}
+                        className={`p-3 rounded-2xl border-2 text-center transition-all ${
+                          isSel
+                            ? "border-blue-600 bg-blue-50 text-blue-900 font-extrabold shadow-sm ring-2 ring-blue-500/20"
+                            : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                        }`}
+                      >
+                        <div className="text-xl mb-1">{f.icon}</div>
+                        <div className="text-xs font-bold text-slate-900">{f.title}</div>
+                        <div className="text-[10px] text-slate-400 mt-0.5">{f.desc}</div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1.5">
-                  3. Dynamic Flag Banner CTA Text *
+              {/* 1C. Character Sizing & Sponsor Tier */}
+              <div className="space-y-2.5">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>1C.</span> Character Sizing &amp; Sponsor Tier *
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={editingCampaign?.ctaText || ""}
-                  onChange={(e) => setEditingCampaign({ ...editingCampaign, ctaText: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-            </div>
 
-            {/* 2B. User Click Destination Action */}
-            <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                2B. User Click Destination Action *
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {[
-                  { id: "PAGE", icon: "🏪", title: "Dedicated Seller Page", desc: "Opens full /seller/[id] showcase with products, NDIS badges & booking inquiry form." },
-                  { id: "MODAL", icon: "📱", title: "Quick Catalog Modal", desc: "Opens popup dialog displaying featured inventory without leaving the current page." },
-                  { id: "URL", icon: "🔗", title: "Direct External URL", desc: "Directly opens advertiser external website in a new browser tab." },
-                ].map((dest) => {
-                  const isSel = (editingCampaign?.clickBehavior || "PAGE") === dest.id;
-                  return (
-                    <button
-                      key={dest.id}
-                      type="button"
-                      onClick={() => setEditingCampaign({ ...editingCampaign, clickBehavior: dest.id as any })}
-                      className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                        isSel
-                          ? "border-emerald-600 bg-emerald-50/60 text-emerald-950 font-bold shadow-md"
-                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
-                      }`}
-                    >
-                      <div className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
-                        <span>{dest.icon}</span>
-                        <span>{dest.title}</span>
-                      </div>
-                      <div className="text-[11px] text-slate-500 mt-1 leading-relaxed">{dest.desc}</div>
-                    </button>
-                  );
-                })}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                  {[
+                    { size: "large", title: "🌟 Hero (100%)", height: "~180px", desc: "Maximum visual impact & flagship authority." },
+                    { size: "medium", title: "✨ Standard (80%)", height: "~145px", desc: "Balanced scale for category sponsorship." },
+                    { size: "small", title: "🔍 Compact (62%)", height: "~110px", desc: "Subtle peripheral placement." },
+                  ].map((s) => {
+                    const isSel = (editingCampaign?.characterSize || "large") === s.size;
+                    return (
+                      <button
+                        key={s.size}
+                        type="button"
+                        onClick={() => setEditingCampaign({ ...editingCampaign, characterSize: s.size as CharacterSize })}
+                        className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
+                          isSel
+                            ? "border-amber-500 bg-amber-50/70 text-amber-950 font-bold shadow-sm ring-2 ring-amber-500/20"
+                            : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                        }`}
+                      >
+                        <div className="text-xs font-extrabold text-slate-900 flex items-center justify-between">
+                          <span>{s.title}</span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-bold">{s.height}</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 mt-1 leading-snug">{s.desc}</div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
 
-            {/* 3. Character Picker & Outfit Customizer */}
-            <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                3. Primary Character &amp; Outfit Customizer (16 Available) *
-              </label>
-              <div className="bg-slate-50 p-5 rounded-3xl border border-slate-200">
-                <CharacterLibrary
-                  selectedCharacterId={(editingCampaign?.characterId || "wheelchair_boy") as CharacterId}
-                  onSelectCharacter={(char: CharacterAsset) => {
-                    setEditingCampaign({ ...editingCampaign, characterId: char.id, ctaText: char.defaultCta, bubbleText: char.defaultBubble });
-                  }}
-                  sampleCtaText={editingCampaign?.ctaText}
-                  selectedFlagShape={editingCampaign?.flagShape}
-                  selectedAccessory={editingCampaign?.accessory}
-                  onSelectAccessory={(accessory) => {
-                    setEditingCampaign({ ...editingCampaign, accessory });
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* 4. Live Dialogue & Encounter Flow Preview */}
-            <div className="p-6 bg-slate-50 rounded-3xl border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-purple-700 uppercase tracking-wider flex items-center gap-2">
-                  <span>🎬</span> Live Encounter Studio Preview ({editingCampaign?.campaignMode || "SOLO"})
-                </span>
-                <span className="text-[10px] text-slate-500 font-semibold">Interactive Preview</span>
-              </div>
-              <div className="h-36 bg-white rounded-2xl flex items-center justify-center gap-6 overflow-hidden relative border border-slate-200 shadow-inner">
-                <div className="transform">
-                  <CharacterSprite
-                    characterId={editingCampaign?.characterId || "wheelchair_boy"}
-                    ctaText={editingCampaign?.mergedBannerText || editingCampaign?.ctaText || "Click to see our products"}
-                    bubbleText={editingCampaign?.dialogueScript?.char1Line || editingCampaign?.bubbleText}
-                    themeColor={selectedCharMeta.themeColor}
-                    flagShape={editingCampaign?.flagShape}
-                    accessory={editingCampaign?.accessory}
-                    size={editingCampaign?.characterSize || "large"}
+              {/* 2. Advertiser Name & CTA Text */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 mb-1.5">
+                    2. Primary Advertiser Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editingCampaign?.advertiserName || ""}
+                    onChange={(e) => setEditingCampaign({ ...editingCampaign, advertiserName: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
-                {editingCampaign?.campaignMode !== "SOLO" && (
-                  <div className="transform -ml-6">
-                    <CharacterSprite
-                      characterId={editingCampaign?.partnerCharacterId || "accessible_van"}
-                      ctaText={editingCampaign?.ctaText || "Click to see our products"}
-                      bubbleText={editingCampaign?.dialogueScript?.char2Line || partnerCharMeta.defaultBubble}
-                      themeColor={partnerCharMeta.themeColor}
-                      flagShape="swallowtail"
-                      size={editingCampaign?.characterSize || "large"}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
 
-            {/* 5. Page Assignment */}
-            <div className="space-y-2">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                5. Page Assignment *
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
-                {ALL_PAGES.map((pg) => {
-                  const isAssigned = (editingCampaign?.assignedPages || []).includes(pg.slug);
-                  return (
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-700 mb-1.5">
+                    3. Dynamic Flag Banner CTA Text *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editingCampaign?.ctaText || ""}
+                    onChange={(e) => setEditingCampaign({ ...editingCampaign, ctaText: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* 2B. User Click Destination Action */}
+              <div className="space-y-2.5">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>2B.</span> User Click Destination Action *
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                  {[
+                    { id: "PAGE", icon: "🏪", title: "Dedicated Seller Page", desc: "Opens full /seller/[id] showcase with products & booking form." },
+                    { id: "MODAL", icon: "📱", title: "Quick Catalog Modal", desc: "Opens popup dialog displaying featured items." },
+                    { id: "URL", icon: "🔗", title: "Direct External URL", desc: "Opens advertiser external website." },
+                  ].map((dest) => {
+                    const isSel = (editingCampaign?.clickBehavior || "PAGE") === dest.id;
+                    return (
+                      <button
+                        key={dest.id}
+                        type="button"
+                        onClick={() => setEditingCampaign({ ...editingCampaign, clickBehavior: dest.id as any })}
+                        className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
+                          isSel
+                            ? "border-emerald-600 bg-emerald-50 text-emerald-950 font-bold shadow-sm"
+                            : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                        }`}
+                      >
+                        <div className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                          <span>{dest.icon}</span>
+                          <span>{dest.title}</span>
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-1 leading-snug">{dest.desc}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 3. Character Picker & Outfit Customizer */}
+              <div className="space-y-2.5">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>3.</span> Primary Character &amp; Outfit Customizer (16 Characters) *
+                </label>
+                <div className="bg-slate-50 p-4 rounded-3xl border border-slate-200">
+                  <CharacterLibrary
+                    selectedCharacterId={(editingCampaign?.characterId || "wheelchair_boy") as CharacterId}
+                    onSelectCharacter={(char: CharacterAsset) => {
+                      setEditingCampaign({
+                        ...editingCampaign,
+                        characterId: char.id,
+                        ctaText: `${editingCampaign?.advertiserName || "Suraj Mobility"} — ${char.defaultBubble}`,
+                        bubbleText: char.defaultBubble,
+                      });
+                    }}
+                    sampleCtaText={editingCampaign?.ctaText}
+                    selectedFlagShape={editingCampaign?.flagShape}
+                    selectedAccessory={editingCampaign?.accessory}
+                    onSelectAccessory={(accessory) => {
+                      setEditingCampaign({ ...editingCampaign, accessory });
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* 4. Co-Op Dialogue Script (Only if Multi-Character Mode) */}
+              {editingCampaign?.campaignMode !== "SOLO" && (
+                <div className="p-5 bg-purple-50/70 border-2 border-purple-200 rounded-3xl space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-purple-900 flex items-center gap-2">
+                      <span>💬</span> Multi-Character Dialogue Script &amp; Partner Setup
+                    </span>
+                    <span className="text-[10px] text-purple-600 font-bold uppercase">Dynamic Exchange</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        Secondary Partner Character *
+                      </label>
+                      <select
+                        value={editingCampaign?.partnerCharacterId || "accessible_van"}
+                        onChange={(e) => setEditingCampaign({ ...editingCampaign, partnerCharacterId: e.target.value as CharacterId })}
+                        className="w-full px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                      >
+                        {MOCK_CHARACTERS.map(ch => (
+                          <option key={ch.id} value={ch.id}>
+                            {ch.icon} {ch.name} ({ch.category})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        Partner Speech Line *
+                      </label>
+                      <input
+                        type="text"
+                        value={editingCampaign?.dialogueScript?.char2Line || ""}
+                        onChange={(e) => setEditingCampaign({
+                          ...editingCampaign,
+                          dialogueScript: {
+                            char1Line: editingCampaign?.dialogueScript?.char1Line || editingCampaign?.bubbleText || "",
+                            char2Line: e.target.value,
+                          }
+                        })}
+                        placeholder="e.g. Yes! Over 20+ models in stock!"
+                        className="w-full px-4 py-2 rounded-xl border border-slate-300 text-xs font-semibold bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 5. Page Assignment */}
+              <div className="space-y-2.5">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>5.</span> Category Page Assignment *
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {ALL_PAGES.map((pg) => {
+                    const isAssigned = (editingCampaign?.assignedPages || []).includes(pg.slug);
+                    return (
+                      <button
+                        key={pg.slug}
+                        type="button"
+                        onClick={() => handlePageToggle(pg.slug)}
+                        className={`p-3 rounded-xl border-2 text-xs font-bold transition-all text-left flex items-center justify-between ${
+                          isAssigned
+                            ? "border-blue-600 bg-blue-50 text-blue-900 font-black"
+                            : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                        }`}
+                      >
+                        <span>{pg.label}</span>
+                        {isAssigned && <span className="text-blue-600 font-black">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("list")}
+                  className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all border border-slate-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-xs shadow-xl shadow-blue-600/30 transition-all"
+                >
+                  Save &amp; Deploy Campaign to Marketplace →
+                </button>
+              </div>
+
+            </form>
+
+            {/* ============================================================ */}
+            {/* --- RIGHT COLUMN (5 COLS): STICKY INTERACTIVE LIVE STAGE --- */}
+            {/* ============================================================ */}
+            <div className="lg:col-span-5 sticky top-24 space-y-4">
+              
+              {/* --- THE LIVE SIMULATOR STAGE BOX --- */}
+              <div className="bg-white rounded-3xl border-2 border-blue-200 p-6 shadow-xl space-y-4 overflow-hidden relative">
+                
+                {/* Stage Header */}
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
+                    <span className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                      Live Simulation Stage
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
                     <button
-                      key={pg.slug}
                       type="button"
-                      onClick={() => handlePageToggle(pg.slug)}
-                      className={`p-3.5 rounded-xl border-2 text-xs font-bold transition-all text-left flex items-center justify-between ${
-                        isAssigned
-                          ? "border-blue-600 bg-blue-50 text-blue-900 font-black"
-                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
+                      onClick={() => setIsSimulating(!isSimulating)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all flex items-center gap-1 ${
+                        isSimulating
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-slate-100 text-slate-600 border border-slate-200"
                       }`}
                     >
-                      <span>{pg.label}</span>
-                      {isAssigned && <span className="text-blue-600">✓</span>}
+                      <span>{isSimulating ? "⏸ Pause" : "▶ Play Motion"}</span>
                     </button>
-                  );
-                })}
+                  </div>
+                </div>
+
+                {/* Sizing Comparison Scale Ruler Top Guide */}
+                <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 px-2">
+                  <span>Scale Guide:</span>
+                  <div className="flex items-center gap-2">
+                    <span className={(editingCampaign?.characterSize || "large") === "large" ? "text-amber-600 font-extrabold underline" : ""}>
+                      Large 180px
+                    </span>
+                    <span>•</span>
+                    <span className={editingCampaign?.characterSize === "medium" ? "text-blue-600 font-extrabold underline" : ""}>
+                      Medium 145px
+                    </span>
+                    <span>•</span>
+                    <span className={editingCampaign?.characterSize === "small" ? "text-slate-700 font-extrabold underline" : ""}>
+                      Small 110px
+                    </span>
+                  </div>
+                </div>
+
+                {/* Stage Viewport Area */}
+                <div className="h-56 bg-gradient-to-b from-slate-50 via-blue-50/30 to-slate-100/80 rounded-2xl border border-slate-200 flex flex-col justify-end p-4 relative overflow-hidden shadow-inner">
+                  
+                  {/* Subtle ground baseline track */}
+                  <div className="absolute bottom-3 left-0 right-0 h-1 bg-slate-200/80 border-t border-slate-300/40"></div>
+
+                  {/* Motion floating wrapper */}
+                  <div className={`relative flex items-end justify-center gap-4 transition-all duration-500 ${
+                    isSimulating ? "animate-pulse" : ""
+                  }`}>
+                    
+                    {/* Primary Character */}
+                    <div className="relative transform transition-all duration-300">
+                      <CharacterSprite
+                        characterId={editingCampaign?.characterId || "wheelchair_boy"}
+                        ctaText={editingCampaign?.ctaText || "Suraj Mobility Solutions — Explore All Ads"}
+                        bubbleText={
+                          editingCampaign?.campaignMode !== "SOLO" && simulationDialogueStep === 1
+                            ? (editingCampaign?.dialogueScript?.char1Line || editingCampaign?.bubbleText)
+                            : editingCampaign?.bubbleText
+                        }
+                        themeColor={selectedCharMeta.themeColor}
+                        flagShape={editingCampaign?.flagShape || "swallowtail"}
+                        accessory={editingCampaign?.accessory || "none"}
+                        size={editingCampaign?.characterSize || "large"}
+                        isTalking={simulationDialogueStep === 1}
+                        isHovered={simulationDialogueStep === 1}
+                      />
+                    </div>
+
+                    {/* Secondary Partner Character (If Multi-Character Mode) */}
+                    {editingCampaign?.campaignMode !== "SOLO" && (
+                      <div className={`relative transform transition-all duration-500 ${
+                        editingCampaign?.campaignMode === "RACE_OVERTAKE" ? "translate-x-3 -translate-y-2" : "-ml-6"
+                      }`}>
+                        <CharacterSprite
+                          characterId={editingCampaign?.partnerCharacterId || "accessible_van"}
+                          ctaText={editingCampaign?.ctaText}
+                          bubbleText={
+                            simulationDialogueStep === 2
+                              ? (editingCampaign?.dialogueScript?.char2Line || partnerCharMeta.defaultBubble)
+                              : partnerCharMeta.defaultBubble
+                          }
+                          themeColor={partnerCharMeta.themeColor}
+                          flagShape="swallowtail"
+                          size={editingCampaign?.characterSize || "large"}
+                          isTalking={simulationDialogueStep === 2}
+                        />
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+
+                {/* Live Real-Time Spec Sheet */}
+                <div className="space-y-2 pt-2 border-t border-slate-100 text-xs">
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span className="font-semibold">Selected Mascot:</span>
+                    <strong className="text-slate-900">{selectedCharMeta.icon} {selectedCharMeta.name}</strong>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span className="font-semibold">Active Outfit:</span>
+                    <strong className="text-blue-700 capitalize">
+                      {editingCampaign?.accessory && editingCampaign.accessory !== "none" ? `✨ ${editingCampaign.accessory.replace("_", " ")}` : "Standard Gear"}
+                    </strong>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span className="font-semibold">Flag Shape Geometry:</span>
+                    <strong className="text-slate-900 capitalize">🚩 {editingCampaign?.flagShape || "Swallowtail"}</strong>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span className="font-semibold">Sponsor Sizing Tier:</span>
+                    <strong className="text-amber-700 uppercase">
+                      {(editingCampaign?.characterSize || "large") === "large" ? "Hero (100% Scale)" : editingCampaign?.characterSize === "medium" ? "Standard (80% Scale)" : "Compact (62% Scale)"}
+                    </strong>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span className="font-semibold">Click Action Route:</span>
+                    <strong className="text-emerald-700 font-mono text-[11px]">
+                      {editingCampaign?.clickBehavior === "PAGE" ? "/seller/storefront" : editingCampaign?.clickBehavior || "/seller/storefront"}
+                    </strong>
+                  </div>
+                </div>
+
               </div>
+
             </div>
 
-            {/* Form Actions */}
-            <div className="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setActiveTab("list")}
-                className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all border border-slate-200"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-xs shadow-xl shadow-blue-600/30 transition-all"
-              >
-                Save &amp; Deploy Campaign to Marketplace →
-              </button>
-            </div>
-
-          </form>
+          </div>
         )}
 
       </main>
