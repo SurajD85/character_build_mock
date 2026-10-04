@@ -3,7 +3,7 @@
 import React, { useState, use } from "react";
 import Link from "next/link";
 import { MOCK_ADVERTISERS } from "../../../lib/mockData";
-import { CruisingAdEngine } from "../../../components/CruisingAdEngine";
+import { LivingCruisingEngine } from "../../../components/LivingCruisingEngine";
 import { AdCampaign } from "../../../types/campaign";
 
 interface SellerPageProps {
@@ -459,7 +459,7 @@ export default function SellerStorefrontPage({ params }: SellerPageProps) {
       </main>
 
       {/* --- STOREFRONT FLOATING CHARACTER ENGINE --- */}
-      <CruisingAdEngine
+      <LivingCruisingEngine
         campaigns={sellerStoreCampaign}
         currentPage="all"
         onCampaignClick={() => {

@@ -1,20 +1,26 @@
 export type CharacterId = 
   | "wheelchair_boy" 
   | "accessible_van" 
-  | "scooter_nurse" 
+  | "mobility_scooter" 
+  | "scooter_nurse"
+  | "care_nurse" 
+  | "doctor_specialist" 
+  | "guide_dog_duo" 
+  | "prosthetic_athlete" 
   | "electric_chair" 
   | "stairlift_pro" 
   | "walker_lady" 
-  | "guide_dog_duo" 
   | "hearing_aid_teen" 
-  | "prosthetic_athlete" 
   | "crutches_kid" 
   | "delivery_trike" 
   | "sign_language_duo"
   | "bionic_arm_builder"
   | "sensory_calm_teen"
   | "pediatric_walker_kid"
-  | "carer_support_duo";
+  | "carer_support_duo"
+  | "target_aim_hero"
+  | "target_archer_hero"
+  | string;
 
 export type PageSlug = "all" | "home" | "wheelchairs" | "vans" | "scooters" | "finance";
 
@@ -27,12 +33,22 @@ export type CharacterAccessory = "none" | "cape" | "party_hat" | "sunglasses" | 
 export type CharacterSize = "small" | "medium" | "large";
 
 export interface DialogueScript {
-  char1Line: string; // e.g. "Looking for accessible transport?"
-  char2Line: string; // e.g. "ABC Mobility has 20+ vans in stock!"
+  char1Line: string;
+  char2Line: string;
+}
+
+export interface CharacterRiggingRules {
+  hasWheelSpin: boolean;
+  hasBlinkingEyes: boolean;
+  hasGazeTracking: boolean;
+  hasBreathingTorso: boolean;
+  hasWavingArm: boolean;
+  hasScarfRipple: boolean;
+  hasTailWag: boolean;
 }
 
 export interface CharacterAsset {
-  id: CharacterId;
+  id: string;
   name: string;
   category: string;
   icon: string;
@@ -43,6 +59,10 @@ export interface CharacterAsset {
   badge: string;
   speedMultiplier: number;
   defaultFlagShape?: FlagShape;
+  isCustom?: boolean;
+  rigging?: CharacterRiggingRules;
+  customSvgContent?: string;
+  baseTemplate?: "wheelchair" | "van" | "scooter" | "nurse" | "doctor" | "dog" | "runner" | "target";
 }
 
 export interface AdvertiserItem {
@@ -71,29 +91,25 @@ export interface AdCampaign {
   id: string;
   advertiserName: string;
   advertiserId: string;
-  characterId: CharacterId;
-  ctaText: string;             // Flag / Ribbon banner dynamic text
-  bubbleText?: string;          // Optional speech bubble text
-  flagShape?: FlagShape;       // Shape of banner flag
-  accessory?: CharacterAccessory; // Customizer accessory (cape, hat, sunglasses, etc.)
-  wheelColor?: string;         // Custom wheel accent color
-  characterSize?: CharacterSize; // Size tier: large (100% hero), medium (78% standard), small (58% compact)
-  
-  // --- CHOREOGRAPHY & MULTI-CHARACTER ENCOUNTER FIELDS ---
+  characterId: string;
+  ctaText: string;
+  bubbleText?: string;
+  flagShape?: FlagShape;
+  accessory?: CharacterAccessory;
+  wheelColor?: string;
+  characterSize?: CharacterSize;
   campaignMode: CampaignMode;
-  partnerCharacterId?: CharacterId;
+  partnerCharacterId?: string;
   partnerAdvertiserName?: string;
   dialogueScript?: DialogueScript;
-  mergedBannerText?: string;   // Joint banner displayed when characters group up
-  
-  targetUrl: string;            
-  clickBehavior: "PAGE" | "MODAL" | "URL"; 
-  assignedPages: PageSlug[];    
-  startDate: string;            
-  endDate: string;              
+  mergedBannerText?: string;
+  targetUrl: string;
+  clickBehavior: "PAGE" | "MODAL" | "URL";
+  assignedPages: PageSlug[];
+  startDate: string;
+  endDate: string;
   status: "ACTIVE" | "INACTIVE";
   impressions: number;
   clicks: number;
   createdAt: string;
 }
-

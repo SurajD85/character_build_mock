@@ -1,21 +1,23 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AdCampaign, PageSlug } from "../types/campaign";
 import { INITIAL_CAMPAIGNS, MOCK_CHARACTERS } from "../lib/mockData";
-import { CruisingAdEngine } from "../components/CruisingAdEngine";
+import { LivingCruisingEngine } from "../components/LivingCruisingEngine";
 import { AdminCmsPanel } from "../components/AdminCmsPanel";
 import { AdvertiserModal } from "../components/AdvertiserModal";
+import { LivingCharacterType } from "../components/LivingCharacterSprite";
 
 export default function Home() {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<PageSlug>("home");
   const [campaigns, setCampaigns] = useState<AdCampaign[]>(INITIAL_CAMPAIGNS);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
   const [selectedModalCampaign, setSelectedModalCampaign] = useState<AdCampaign | null>(null);
+  const [speedMultiplier, setSpeedMultiplier] = useState<number>(1.0);
 
   useEffect(() => {
     setIsMounted(true);
@@ -23,52 +25,45 @@ export default function Home() {
 
   if (!isMounted) return null;
 
-  // Handle Campaign Clicks from Cruising Engine -> Directly Open Full Seller Storefront Page
+  // Handle Campaign Clicks from Cruising Engine -> Open Showcase Modal
   const handleCampaignClick = (campaign: AdCampaign) => {
-    // Increment click count in state
-    setCampaigns(prev => prev.map(c => {
-      if (c.id === campaign.id) {
-        return { ...c, clicks: c.clicks + 1 };
-      }
-      return c;
-    }));
+    setCampaigns((prev) =>
+      prev.map((c) => (c.id === campaign.id ? { ...c, clicks: c.clicks + 1 } : c))
+    );
 
     if (campaign.clickBehavior === "URL" && campaign.targetUrl && campaign.targetUrl.startsWith("http")) {
       window.open(campaign.targetUrl, "_blank");
     } else {
-      // Direct navigation to dedicated full seller storefront page
-      router.push(`/seller/${campaign.advertiserId || "adv_abc_mobility"}`);
+      setSelectedModalCampaign(campaign);
     }
   };
 
-  // Save / Update Campaign from Admin Panel
   const handleSaveCampaign = (savedCampaign: AdCampaign) => {
-    setCampaigns(prev => {
-      const exists = prev.some(c => c.id === savedCampaign.id);
+    setCampaigns((prev) => {
+      const exists = prev.some((c) => c.id === savedCampaign.id);
       if (exists) {
-        return prev.map(c => c.id === savedCampaign.id ? savedCampaign : c);
+        return prev.map((c) => (c.id === savedCampaign.id ? savedCampaign : c));
       }
       return [savedCampaign, ...prev];
     });
   };
 
-  // Delete Campaign
   const handleDeleteCampaign = (id: string) => {
-    setCampaigns(prev => prev.filter(c => c.id !== id));
+    setCampaigns((prev) => prev.filter((c) => c.id !== id));
   };
 
-  // Toggle Active/Inactive Status
   const handleToggleStatus = (id: string) => {
-    setCampaigns(prev => prev.map(c => {
-      if (c.id === id) {
-        const nextStatus = c.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-        return { ...c, status: nextStatus };
-      }
-      return c;
-    }));
+    setCampaigns((prev) =>
+      prev.map((c) => {
+        if (c.id === id) {
+          return { ...c, status: c.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" };
+        }
+        return c;
+      })
+    );
   };
 
-  const activeAdsForCurrentPage = campaigns.filter(c => {
+  const activeAdsForCurrentPage = campaigns.filter((c) => {
     if (c.status !== "ACTIVE") return false;
     if (c.assignedPages.includes("all")) return true;
     return c.assignedPages.includes(currentPage);
@@ -76,92 +71,65 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans relative pb-32 overflow-x-hidden">
-      
-      {/* --- TOP ADMIN PROMOTIONAL CONTROLLER BAR (CLEAN LIGHT THEME) --- */}
+      {/* ========================================================================= */}
+      {/* 1. TOP CONTROLLER BAR */}
+      {/* ========================================================================= */}
       <div className="bg-white text-slate-800 py-2.5 px-6 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 text-xs z-50 relative shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <span className="flex items-center gap-2 font-black text-blue-700 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-            Prototype CMS Live Mode
+            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+            100% Living Character Engine (V2)
           </span>
           <span className="text-slate-500 hidden lg:inline font-medium">
-            Active Cruising Ads on this page: <strong className="text-slate-900 font-bold">{activeAdsForCurrentPage.length}</strong>
+            Active Cruising Ads on Page: <strong className="text-slate-900 font-bold">{activeAdsForCurrentPage.length}</strong>
           </span>
 
-          {/* Quick Character Preset Switcher */}
-          <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200">
-            <span className="text-[10px] text-slate-500 font-bold uppercase mr-1 hidden sm:inline">Select Character:</span>
-            {MOCK_CHARACTERS.map((char) => {
-              const isActiveChar = campaigns.some(c => c.status === "ACTIVE" && c.characterId === char.id && (c.assignedPages.includes("all") || c.assignedPages.includes(currentPage)));
-              return (
-                <button
-                  key={char.id}
-                  onClick={() => {
-                    // Update first active campaign to use this character
-                    setCampaigns(prev => prev.map((c, i) => {
-                      if (i === 0 || c.assignedPages.includes(currentPage)) {
-                        return { ...c, characterId: char.id, ctaText: `${c.advertiserName} — See All Ads`, bubbleText: char.defaultBubble };
-                      }
-                      return c;
-                    }));
-                  }}
-                  className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all flex items-center gap-1 ${
-                    isActiveChar
-                      ? "bg-blue-600 text-white shadow-md scale-105"
-                      : "bg-white text-slate-700 hover:bg-slate-200 hover:text-slate-900 border border-slate-200"
-                  }`}
-                  title={`Switch active character to ${char.name}`}
-                >
-                  <span>{char.icon}</span>
-                  <span className="hidden md:inline">{char.name.split(' ')[0]}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Quick Size Switcher */}
-          <div className="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-xl border border-slate-200">
-            <span className="text-[10px] text-slate-500 font-bold uppercase mr-1 hidden sm:inline">Size:</span>
-            {(["large", "medium", "small"] as const).map((sz) => {
-              const activeCampaign = campaigns[0];
-              const isSelected = (activeCampaign?.characterSize || "large") === sz;
-              return (
-                <button
-                  key={sz}
-                  onClick={() => {
-                    setCampaigns(prev => prev.map((c, i) => {
-                      if (i === 0 || c.assignedPages.includes(currentPage)) {
-                        return { ...c, characterSize: sz };
-                      }
-                      return c;
-                    }));
-                  }}
-                  className={`px-2 py-0.5 rounded-lg font-bold text-[10px] transition-all capitalize ${
-                    isSelected
-                      ? "bg-amber-500 text-slate-950 font-black shadow-sm scale-105"
-                      : "bg-white text-slate-600 hover:bg-slate-200 border border-slate-200"
-                  }`}
-                  title={`Set character size to ${sz}`}
-                >
-                  {sz === "large" ? "🌟 Large" : sz === "medium" ? "✨ Medium" : "🔍 Small"}
-                </button>
-              );
-            })}
+          {/* Quick Character Presets */}
+          <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200 overflow-x-auto">
+            <span className="text-[10px] text-slate-500 font-bold uppercase mr-1 hidden sm:inline">Active Character:</span>
+            {MOCK_CHARACTERS.map((char) => (
+              <button
+                key={char.id}
+                type="button"
+                onClick={() => {
+                  setCampaigns((prev) =>
+                    prev.map((c, i) => (i === 0 ? { ...c, characterId: char.id as any } : c))
+                  );
+                }}
+                className={`px-2 py-0.5 rounded-lg font-bold text-[11px] transition-all flex items-center gap-1 ${
+                  (campaigns[0]?.characterId as string) === char.id
+                    ? "bg-blue-600 text-white shadow-xs"
+                    : "bg-white text-slate-700 hover:bg-slate-200 border border-slate-200"
+                }`}
+              >
+                <span>{char.icon}</span>
+                <span className="hidden md:inline">{char.name.split(" ")[0]}</span>
+              </button>
+            ))}
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
-            href="/admin"
-            className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl shadow-md transition-all flex items-center gap-1.5"
+            href="/v2"
+            className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 text-xs"
           >
-            <span>💼 Ad Revenue &amp; CMS Studio</span>
-            <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-black">NEW PAGE ↗</span>
+            <span>✨ Full V2 Showcase</span>
+            <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-black">PLAYGROUND →</span>
+          </Link>
+          <Link
+            href="/admin"
+            className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl shadow-md transition-all flex items-center gap-1.5 text-xs"
+          >
+            <span>Ad Revenue & CMS Studio</span>
+            <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-black">ADMIN →</span>
           </Link>
         </div>
       </div>
 
-      {/* --- MAIN NAVIGATION BAR & PAGE SIMULATOR --- */}
+      {/* ========================================================================= */}
+      {/* 2. MAIN MARKETPLACE HEADER & CATEGORY FILTER */}
+      {/* ========================================================================= */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -174,171 +142,120 @@ export default function Home() {
             </div>
           </div>
 
-          {/* PAGE SWITCHER TAB SIMULATOR */}
-          <nav className="flex items-center bg-slate-100 p-1.5 rounded-2xl gap-1 border border-slate-200">
-            {[
-              { slug: "home", label: "🏠 Home", badge: "General" },
-              { slug: "wheelchairs", label: "🧑‍🦼 Wheelchairs", badge: "Category" },
-              { slug: "vans", label: "🚐 Vans & Vehicles", badge: "Category" },
-              { slug: "scooters", label: "🛵 Mobility Scooters", badge: "Category" },
-              { slug: "finance", label: "💳 Finance", badge: "Services" },
-            ].map((tab) => {
-              const isActive = currentPage === tab.slug;
-              return (
-                <button
-                  key={tab.slug}
-                  onClick={() => setCurrentPage(tab.slug as PageSlug)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    isActive
-                      ? "bg-white text-blue-700 shadow-md shadow-slate-200 scale-105"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-            <div className="h-4 w-px bg-slate-300 mx-1"></div>
-            <Link
-              href="/admin"
-              className="px-3.5 py-2 rounded-xl text-xs font-black text-indigo-700 hover:bg-indigo-50 border border-indigo-200 flex items-center gap-1.5 transition-all"
-            >
-              <span>⚙️ CMS Studio</span>
-              <span className="text-[10px] text-indigo-500 font-bold">↗</span>
-            </Link>
-          </nav>
+          <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 overflow-x-auto w-full md:w-auto">
+            {(["all", "home", "wheelchairs", "vans", "scooters", "finance"] as PageSlug[]).map((pg) => (
+              <button
+                key={pg}
+                type="button"
+                onClick={() => setCurrentPage(pg)}
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs capitalize transition-all whitespace-nowrap ${
+                  currentPage === pg
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "text-slate-600 hover:bg-white hover:text-slate-900"
+                }`}
+              >
+                {pg === "all" ? "All Pages" : pg}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
-      {/* --- PAGE CONTENT BASED ON CURRENT PAGE SIMULATOR --- */}
-      <main className="max-w-7xl mx-auto px-6 py-10 space-y-12">
-        
-        {/* HERO SECTION */}
-        <section className="bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white rounded-3xl p-8 md:p-14 shadow-2xl relative overflow-hidden">
-          <div className="max-w-2xl relative z-10 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold text-blue-200 border border-white/15">
-              <span>🌟</span> Australia's #1 Mobility Marketplace
-            </div>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
-              {currentPage === "home" && "Freedom & Independence on Wheels."}
-              {currentPage === "wheelchairs" && "Certified Power & Manual Wheelchairs."}
-              {currentPage === "vans" && "Wheelchair Accessible Vehicles & Ramp Vans."}
-              {currentPage === "scooters" && "All-Terrain & Foldable Mobility Scooters."}
-              {currentPage === "finance" && "Accessible Equipment Financing & Grants."}
+      {/* ========================================================================= */}
+      {/* 3. HERO CONTENT */}
+      {/* ========================================================================= */}
+      <main className="max-w-7xl mx-auto px-6 py-10">
+        <div className="bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-xl mb-12 relative overflow-hidden">
+          <div className="relative z-10 max-w-2xl">
+            <span className="bg-blue-500/20 text-blue-300 text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full border border-blue-400/30 inline-block mb-4">
+              Australia's #1 Accessibility Hub
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-4">
+              Empowering Freedom & Mobility Across Australia
             </h2>
-            <p className="text-lg text-slate-300 font-medium leading-relaxed">
-              Explore thousands of verified listing ads from premier advertisers across Australia and New Zealand. Look out for our moving character ad slots cruising at the bottom of the page!
+            <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+              Search verified NDIS-registered wheelchair accessible vans, power wheelchairs, mobility scooters, and clinical support equipment.
             </p>
-
-            <div className="flex flex-wrap gap-4 pt-2">
-              <button className="px-6 py-3.5 bg-white text-blue-800 font-extrabold text-sm rounded-xl hover:bg-blue-50 shadow-xl transition-all">
-                Browse Category Listings
-              </button>
-              <button 
-                onClick={() => setIsAdminOpen(true)}
-                className="px-6 py-3.5 bg-blue-600/80 hover:bg-blue-600 text-white font-extrabold text-sm rounded-xl border border-white/20 transition-all"
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                className="bg-blue-500 hover:bg-blue-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition shadow-lg"
               >
-                + Post Paid Advertiser Slot
+                Browse 1,400+ Listings
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAdminOpen(true)}
+                className="bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-3 rounded-xl text-sm transition border border-white/20"
+              >
+                Manage Ad Campaigns
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Background Decorative Rings */}
-          <div className="absolute -right-10 -bottom-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        </section>
-
-        {/* ACTIVE MOVING CHARACTERS BANNER SUMMARY CARD */}
-        <section className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-3xl font-black">
-              📢
+        {/* Feature Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-2xl mb-4">
+              🚐
             </div>
-            <div>
-              <h3 className="text-base font-extrabold text-slate-900">Current Cruising Ad Slots on Page ({currentPage.toUpperCase()})</h3>
-              <p className="text-xs text-slate-500">
-                Below are the active advertiser campaigns assigned to cruise across this page. Click on any moving character or banner flag to test the user flow!
-              </p>
+            <h3 className="font-bold text-slate-900 text-base mb-2">Welcab Vans & Slopers</h3>
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Explore Toyota HiAce, Alphard, and Ford Transit custom ramp vehicles with certified tie-down systems.
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 text-2xl mb-4">
+              ♿
             </div>
+            <h3 className="font-bold text-slate-900 text-base mb-2">Ergonomic Wheelchairs</h3>
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Ultra-lightweight manual chairs, power tilt-in-space chairs, and pediatric superhero designs.
+            </p>
           </div>
 
-          <div className="flex items-center gap-3 flex-shrink-0">
-            {activeAdsForCurrentPage.map((ad) => {
-              const charMeta = MOCK_CHARACTERS.find(c => c.id === ad.characterId);
-              return (
-                <div 
-                  key={ad.id} 
-                  onClick={() => router.push(`/seller/${ad.advertiserId || "adv_abc_mobility"}`)}
-                  className="px-3.5 py-2 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-xl cursor-pointer transition-all flex items-center gap-2 text-xs font-bold shadow-sm hover:shadow"
-                  title={`Open ${ad.advertiserName} Storefront`}
-                >
-                  <span className="text-lg">{charMeta?.icon || "🎭"}</span>
-                  <div>
-                    <div className="text-slate-900 leading-tight flex items-center gap-1">
-                      <span>{ad.advertiserName}</span>
-                      <span className="text-[10px] text-blue-600 font-bold">↗</span>
-                    </div>
-                    <div className="text-[10px] text-blue-600 font-semibold">"{ad.ctaText}"</div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 text-2xl mb-4">
+              🩺
+            </div>
+            <h3 className="font-bold text-slate-900 text-base mb-2">Clinical OT Assessments</h3>
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Connect directly with registered Occupational Therapists and care providers for NDIS funding.
+            </p>
           </div>
-        </section>
-
-        {/* DUMMY LISTINGS GRID FOR PAGE CONTENT */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-extrabold text-slate-900">Featured Classified Listings</h3>
-            <span className="text-xs font-bold text-slate-500">Showing top results for {currentPage}</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 space-y-4 hover:shadow-md transition-all">
-                <div className="h-44 bg-slate-100 rounded-2xl flex items-center justify-center text-4xl text-slate-300 font-black">
-                  📷 Item Image #{item}
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full">
-                      Verified Seller
-                    </span>
-                    <span className="text-lg font-black text-slate-900">$4,250</span>
-                  </div>
-                  <h4 className="font-extrabold text-slate-900 text-sm">
-                    {currentPage === "vans" && "2021 Toyota HiAce Wheelchair Lift Van"}
-                    {currentPage === "wheelchairs" && "Permobil M3 Corpus Power Wheelchair"}
-                    {currentPage === "scooters" && "Pride Mobility 4-Wheel Scooter"}
-                    {(currentPage === "home" || currentPage === "finance") && "Smart Accessibility Equipment Package"}
-                  </h4>
-                  <p className="text-xs text-slate-500 line-clamp-2">
-                    Excellent condition, low usage, inspected by certified engineers. Available for immediate delivery.
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                  <span>📍 Sydney, NSW</span>
-                  <span className="font-bold text-blue-600 hover:underline cursor-pointer">View Details →</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
+        </div>
       </main>
 
-      {/* --- FLOATING CRUISING AD ENGINE (LOTTIE + GSAP RENDERER) --- */}
-      <CruisingAdEngine
-        campaigns={campaigns}
+      {/* ========================================================================= */}
+      {/* 4. NATIVE LIVING CRUISING ENGINE (FLOATING OVER VIEWPORT) */}
+      {/* ========================================================================= */}
+      <LivingCruisingEngine
+        campaigns={activeAdsForCurrentPage}
         currentPage={currentPage}
         onCampaignClick={handleCampaignClick}
+        speedMultiplier={speedMultiplier}
       />
 
-      {/* --- ADVERTISER CATALOG SHOWCASE MODAL (FALLBACK) --- */}
-      <AdvertiserModal
-        campaign={selectedModalCampaign}
-        onClose={() => setSelectedModalCampaign(null)}
-      />
+      {/* Admin Panel Drawer */}
+      {isAdminOpen && (
+        <AdminCmsPanel
+          campaigns={campaigns}
+          onSaveCampaign={handleSaveCampaign}
+          onDeleteCampaign={handleDeleteCampaign}
+          onToggleStatus={handleToggleStatus}
+          onClose={() => setIsAdminOpen(false)}
+        />
+      )}
 
+      {/* Advertiser Modal */}
+      {selectedModalCampaign && (
+        <AdvertiserModal
+          campaign={selectedModalCampaign}
+          onClose={() => setSelectedModalCampaign(null)}
+        />
+      )}
     </div>
   );
 }
